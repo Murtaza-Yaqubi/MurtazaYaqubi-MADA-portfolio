@@ -2,6 +2,30 @@
 title: "About me"
 ---
 
-Add some text and a figure describing myself.
+## Background:
 
-For details, see the exercise instructions. 
+I am a medical doctor from Afghanistan with three years of experience in the Interventional Cardiology Department. During this time, I worked extensively with a team to deploy stents for occluded heart vessels and implant permanent and temporary pacemakers in patients.
+
+During the COVID-19 pandemic, I participated in contact tracing and data gathering efforts. This experience sparked my interest in public health and motivated me to pursue a Master of Public Health (MPH) with a focus on Biostatistics. I am now a second-year MPH student dedicated to learning how to analyze health data effectively and contribute to meaningful research.
+
+## Research Interests:
+
+My primary research interest lies in analyzing health-related data, particularly in the field of cancer research. I am passionate about leveraging statistical methods to uncover meaningful insights in healthcare and contribute to advancing medical knowledge.
+
+## Technical Skills:
+
+I have a course in R so I have a basic experience with it. For my final project in that course, I analyzed a dataset, which gave me initial exposure to data analysis. However, I am eager to learn how to conduct analyses in a more structured and systematic manner.
+
+## Goals:
+
+My primary goal for this course is to understand the fundamentals of what makes a good data analysis. I hope to implement that knowledge to develop skills that are both practical and impactful in real-world applications.
+
+## Fun Fact:
+
+I can speak five languages and have a passion for traveling. So far, I’ve been fortunate enough to visit places across three continents. In my free time, I enjoy playing video games and watching movies, which help me relax and recharge.
+
+![](images/IMG_0712.HEIC)
+
+![](images/IMG_9082.HEIC)
+
+![](images/IMG_2038.HEIC)
