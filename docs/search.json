@@ -123,7 +123,7 @@
     "href": "starter-analysis-exercise/products/report/starter-analysis-report.html#description-of-data-and-data-source",
     "title": "Manuscript/Report Template for a Data Analysis Project",
     "section": "2.2 Description of data and data source",
-    "text": "2.2 Description of data and data source\nDescribe what the data is, what it contains, where it is from, etc. Eventually this might be part of a methods section."
+    "text": "2.2 Description of data and data source\nTwo new columns have been added: ‘race’ and ‘bmi’. The ‘race’ column contains categories: ‘White’, ‘Black’, ‘Asian’, and ‘Latino’. The ‘bmi’ column is numeric with values ranging from 15 to 34. A BMI of 15 indicates underweight, and a BMI of 34 indicates class 1 obesity."
   },
   {
     "objectID": "starter-analysis-exercise/products/report/starter-analysis-report.html#questionshypotheses-to-be-addressed",
