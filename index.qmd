@@ -6,8 +6,6 @@ Murtaza Yaqubi's MADA portfolio
 
 # Hello
 
-### And hello again
-
 Welcome to **my website** and *data analysis portfolio.*
 
 -   Please use the `Menu Bar` above to look around.

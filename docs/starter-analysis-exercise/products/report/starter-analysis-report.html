@@ -6,8 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Your Name">
-<meta name="dcterms.date" content="2025-01-15">
+<meta name="author" content="Murtaza Yaqubi and Murphy John contributed to this exercise.">
+<meta name="dcterms.date" content="2025-01-17">
 
 <title>Manuscript/Report Template for a Data Analysis Project – Murtaza Yaqubi’s Data Analysis Portfolio</title>
 <style>
@@ -163,14 +163,14 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Your Name </p>
+             <p>Murtaza Yaqubi and Murphy John contributed to this exercise. </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 15, 2025</p>
+      <p class="date">January 17, 2025</p>
     </div>
   </div>
   
@@ -197,7 +197,7 @@ div.csl-indent {
 </section>
 <section id="description-of-data-and-data-source" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="description-of-data-and-data-source"><span class="header-section-number">2.2</span> Description of data and data source</h2>
-<p><em>Two new columns have been added: ‘race’ and ‘bmi’. The ‘race’ column contains categories: ‘White’, ‘Black’, ‘Asian’, and ‘Latino’. The ‘bmi’ column is numeric with values ranging from 15 to 34. A BMI of 15 indicates underweight, and a BMI of 34 indicates class 1 obesity.</em></p>
+<p><em>The data contains a combination of numeric and categorical data related to people. The three numeric data are Height, Weight, Gender and Resting Heart Rate in four columns and the fifth column is the categorical data and looks into Preferred exercise type.</em></p>
 </section>
 <section id="questionshypotheses-to-be-addressed" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="questionshypotheses-to-be-addressed"><span class="header-section-number">2.3</span> Questions/Hypotheses to be addressed</h2>
@@ -339,35 +339,59 @@ Table&nbsp;1: Data summary table.
 <section id="basic-statistical-analysis" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="basic-statistical-analysis"><span class="header-section-number">4.2</span> Basic statistical analysis</h2>
 <p><em>To get some further insight into your data, if reasonable you could compute simple statistics (e.g.&nbsp;simple models with 1 predictor) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any “p&lt;0.05 means statistical significance” interpretation is not valid.</em></p>
-<p><a href="#fig-result" class="quarto-xref">Figure&nbsp;1</a> shows a scatterplot figure produced by one of the R scripts.</p>
+<p><a href="#fig-result1" class="quarto-xref">Figure&nbsp;1</a> shows a scatterplot figure produced by one of the R scripts.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-result" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-result1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-result-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../../results/figures/height-weight-stratified.png" class="img-fluid figure-img">
+<div aria-describedby="fig-result1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../results/figures/weight-resting heart rate.png" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-result-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Height and weight stratified by gender.
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-result1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: weight and resting heart rate.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p><em>This scatterplot shows a moderately positive relationship between Weight and Resting Heart Rate, as indicated by the upward-sloping regression line. Higher weights tend to correspond to higher resting heart rates. Potential outliers are visible, with unusually low or high resting heart rates for certain weights. Note: The shaded grey areas represent 95% confidence intervals which is narrow in the mid section and wider on both ends, suggesting greater uncertainty in those ranges.</em></p>
+<p><a href="#fig-result2" class="quarto-xref">Figure&nbsp;2</a> shows a boxplot figure produced by one of the R scripts.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-result2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-result2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../results/figures/preferred exercise type-height.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-result2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: height and preferred exercise type.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><em>This boxplot shows height distributions across exercise preferences. Strength Training has the tallest heights, while Yoga shows the greatest variability with the lowest median. Cardio displays a moderate range with a median around 170 cm, and None has shorter heights than strength training and cardio.However, it’s important to acknowledge that the dataset is quite limited, which restricts the amount of meaningful information that can be extracted from it.</em></p>
 </section>
 <section id="full-analysis" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="full-analysis"><span class="header-section-number">4.3</span> Full analysis</h2>
 <p><em>Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here.</em></p>
-<p>Example <a href="#tbl-resulttable2" class="quarto-xref">Table&nbsp;2</a> shows a summary of a linear model fit.</p>
+<p>Example <a href="#tbl-resulttable" class="quarto-xref">Table&nbsp;2</a> shows a summary of a linear model fit with height as the outcome and prefered exercise type and resting heart rate as predictors.</p>
 <div class="cell">
-<div id="tbl-resulttable2" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<div id="tbl-resulttable" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-resulttable2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-resulttable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2: Linear model fit table.
 </figcaption>
-<div aria-describedby="tbl-resulttable2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div aria-describedby="tbl-resulttable-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 49%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">term</th>
@@ -380,31 +404,38 @@ Table&nbsp;2: Linear model fit table.
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">149.2726967</td>
-<td style="text-align: right;">23.3823360</td>
-<td style="text-align: right;">6.3839942</td>
-<td style="text-align: right;">0.0013962</td>
+<td style="text-align: right;">232.0805239</td>
+<td style="text-align: right;">40.9163407</td>
+<td style="text-align: right;">5.6720743</td>
+<td style="text-align: right;">0.0047660</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Weight</td>
-<td style="text-align: right;">0.2623972</td>
-<td style="text-align: right;">0.3512436</td>
-<td style="text-align: right;">0.7470519</td>
-<td style="text-align: right;">0.4886517</td>
+<td style="text-align: left;"><code>Preferred exercise type</code>None</td>
+<td style="text-align: right;">-2.1792384</td>
+<td style="text-align: right;">15.2653336</td>
+<td style="text-align: right;">-0.1427573</td>
+<td style="text-align: right;">0.8933842</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">GenderM</td>
-<td style="text-align: right;">-2.1244913</td>
-<td style="text-align: right;">15.5488953</td>
-<td style="text-align: right;">-0.1366329</td>
-<td style="text-align: right;">0.8966520</td>
+<td style="text-align: left;"><code>Preferred exercise type</code>Strength training</td>
+<td style="text-align: right;">3.7630366</td>
+<td style="text-align: right;">14.8372006</td>
+<td style="text-align: right;">0.2536217</td>
+<td style="text-align: right;">0.8122904</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">GenderO</td>
-<td style="text-align: right;">-4.7644739</td>
-<td style="text-align: right;">19.0114155</td>
-<td style="text-align: right;">-0.2506112</td>
-<td style="text-align: right;">0.8120871</td>
+<td style="text-align: left;"><code>Preferred exercise type</code>Yoga</td>
+<td style="text-align: right;">-28.3313122</td>
+<td style="text-align: right;">16.2070182</td>
+<td style="text-align: right;">-1.7480891</td>
+<td style="text-align: right;">0.1553626</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Resting Heart Rate</code></td>
+<td style="text-align: right;">-0.8612661</td>
+<td style="text-align: right;">0.5539445</td>
+<td style="text-align: right;">-1.5547877</td>
+<td style="text-align: right;">0.1949698</td>
 </tr>
 </tbody>
 </table>
@@ -413,6 +444,7 @@ Table&nbsp;2: Linear model fit table.
 </figure>
 </div>
 </div>
+<p><em>There is no strong evidence that these variables reliably predict height in this dataset. None of the predictors are statistically significant.</em></p>
 <div style="page-break-after: always;"></div>
 </section>
 </section>

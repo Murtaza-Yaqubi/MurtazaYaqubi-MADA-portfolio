@@ -107,18 +107,14 @@ d4 <- d3 %>% dplyr::filter( !(Gender %in% c("NA","N")) ) %>% droplevels()
 skimr::skim(d4)
 ```
 
-MJ: Race should be a categorical/factor variable but it is loaded as character.
-MJ: It is good practice if you are using abbreviations in data to explicitly state in the codebook what each abbreviation stands for.
-MJ: W = White, B = Black, A = Asian, L = Latino
+MJ: preferred exercise type should be a categorical/factor variable but it is loaded as character.
 
 ```{r}
-d4$Race <- as.factor(d4$Race)
+d4$`Preferred exercise type` <- as.factor(d4$`Preferred exercise type`)
 
 skimr::skim(d4)
 ```
 
-MJ: since BMI is a calculation of Height and Weight, the data here doesn't really make much sense. 
-MJ: Since this is a toy example, I think it can be disregarded but this should be considered in future analyses.
 
 All done, data is clean now. 
 
