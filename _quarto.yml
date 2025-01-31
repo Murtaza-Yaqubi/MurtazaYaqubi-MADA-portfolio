@@ -16,6 +16,8 @@ website:
             file: coding-exercise/coding-exercise.qmd
           - text: "Data Exercise"
             file: data-exercise/data-exercise.qmd
+          - text: "final project"
+            file: final-project/manuscript.qmd
     right:
       - icon: github 
         href: https://github.com/Murtaza-Yaqubi/MurtazaYaqubi-MADA-portfolio       
