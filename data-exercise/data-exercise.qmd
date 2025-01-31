@@ -2,4 +2,249 @@
 title: "Data Exercise"
 ---
 
-Placeholder file for the future Tidy Tuesday exercise.
+Placeholder file for the data exercise.
+
+# R script for simulated/artificial data examples
+
+## ---- packages --------
+
+# make sure the packages are installed
+
+# Load required packages
+
+```{r}
+library(dplyr) 
+library(purrr) 
+library(lubridate) 
+library(ggplot2) 
+library(here) 
+library(tidyr)
+```
+
+## ---- setup --------
+
+# Set a seed for reproducibility
+
+```{r}
+set.seed(123)
+```
+
+# Define the number of observations (patients) to generate
+
+```{r}
+n_patients <- 590
+```
+
+## ---- makedata --------
+
+# Create an empty data frame with placeholders for variables
+
+```{r}
+cancer_data <- data.frame( 
+  PatientID = numeric(n_patients), 
+  Age = numeric(n_patients), 
+  Gender = character(n_patients), 
+  EnrollmentDate = lubridate::as_date(character(n_patients)), 
+  BMI = numeric(n_patients),
+  BloodPressure = numeric(n_patients), 
+  SmokingHistory = character(n_patients), 
+  CancerStage = character(n_patients), 
+  Metastasis = character(n_patients), # All cases have metastasis 
+  TreatmentType = character(n_patients), 
+  TreatmentStartDate = lubridate::as_date(character(n_patients)), 
+  TreatmentEndDate = lubridate::as_date(character(n_patients)), 
+  TreatmentResponse = integer(n_patients) # 1 = Cured, 2 = Death 
+)
+```
+
+# Display the structure of the empty data frame
+
+```{r}
+str(cancer_data)
+```
+
+# Variable 1: Patient ID
+
+```{r}
+cancer_data$PatientID <- 1:n_patients
+```
+
+# Variable 2: Age (numeric variable)
+
+```{r}
+cancer_data$Age <- round(rnorm(n_patients, mean = 75, sd = 5))
+```
+
+# Variable 3: Gender (categorical variable)
+
+```{r}
+cancer_data$Gender <- purrr::map_chr(sample(c("Male", "Female"), n_patients, replace = TRUE), as.character)
+```
+
+# Variable 4: Enrollment date
+
+```{r}
+cancer_data$EnrollmentDate <- cancer_data$EnrollmentDate <- lubridate::as_date(sample(seq(from = lubridate::as_date("2017-08-01"), to = lubridate::as_date("2017-12-15"), by = "days"), n_patients, replace = TRUE))
+```
+
+# Variable 5: Body Mass Index (BMI) (numeric variable)
+
+```{r}
+cancer_data$BMI <- round(runif(n_patients, min = 17, max = 21), 1)
+```
+
+# Variable 6: Blood Pressure (numeric variable)
+
+```{r}
+cancer_data$BloodPressure <- round(runif(n_patients, min = 170, max = 190), 1)
+```
+
+# Variable 7: Smoking history (categorical variable)
+
+```{r}
+cancer_data$SmokingHistory <- purrr::map_chr(sample(c("Yes", "No"), n_patients, replace = TRUE, prob = c(0.8, 0.2)), as.character)
+
+# Add a few NA's to the smoking history variable
+na_smoke <- sample(1:n_patients, 53) # Randomly select 53 indices 
+cancer_data$SmokingHistory[na_smoke] <- NA # Assign NA to smoke history
+```
+
+# Varibale 8: Cancer stage (categorical variable)
+
+```{r}
+cancer_data$CancerStage <- purrr::map_chr(sample(c("4a", "4b"), n_patients, replace = TRUE, prob = c(0.5, 0.5)), as.character)
+```
+
+# Variable 9: Metastasis (categorial variable)
+
+```{r}
+cancer_data$Metastasis <- rep("Yes", n_patients)
+
+# Add few NA's to the Metastasis variable
+na_meta <- sample(1:n_patients, 17) # Randomly select 17 indices 
+cancer_data$Metastasis[na_meta] <- NA # Assign NA to Metastasis
+```
+
+# Variable 10: Treatment Type (categorical variable)
+
+```{r}
+# Assign treatment type for Chemotherapy and Radiotherapy patients in stage 4a
+cancer_data$TreatmentType[!is.na(cancer_data$CancerStage) & cancer_data$CancerStage == "4a"] <- purrr::map_chr(sample(c("Chemotherapy", "Radiotherapy"), sum(!is.na(cancer_data$CancerStage) & cancer_data$CancerStage == "4a"), replace = TRUE, prob = c(0.7, 0.3)), as.character)
+
+# Assign treatment type for Chemotherapy and Radiotherapy patients in stage 4b
+cancer_data$TreatmentType[!is.na(cancer_data$CancerStage) & cancer_data$CancerStage == "4b"] <- purrr::map_chr(sample(c("Chemotherapy", "Radiotherapy"), sum(!is.na(cancer_data$CancerStage) & cancer_data$CancerStage == "4b"), replace = TRUE, prob = c(0.3, 0.7)), as.character)
+```
+
+# Variable 11: Date of begining of treatment (date variable)
+
+```{r}
+cancer_data$TreatmentStartDate <- lubridate::as_date(sample(seq(from = lubridate::as_date("2018-01-01"), to = lubridate::as_date("2018-05-31"), by = "days"), n_patients, replace = TRUE))
+```
+
+# Variable 12: Treatment completion date (date variable)
+
+```{r}
+cancer_data$TreatmentEndDate <- lubridate::as_date(sample(seq(from = lubridate::as_date("2020-01-01"), to = lubridate::as_date("2020-05-31"), by = "days"), n_patients, replace = TRUE))
+```
+
+# Variable 13: Treatment response (categorical variable)
+
+```{r}
+# Assign TreatmentResponse for Chemotherapy patients in stage 4a
+cancer_data$TreatmentResponse[cancer_data$TreatmentType == "Chemotherapy" & cancer_data$CancerStage == "4a"] <-
+sample(0:1, sum(cancer_data$CancerStage == "4a" & cancer_data$TreatmentType == "Chemotherapy"), replace = TRUE, prob = c(0.2, 0.8))
+
+# Assign TreatmentResponse for Chemotherapy patients in stage 4b
+cancer_data$TreatmentResponse[cancer_data$TreatmentType == "Chemotherapy" & cancer_data$CancerStage == "4b"] <-
+sample(0:1, sum(cancer_data$CancerStage == "4b" & cancer_data$TreatmentType == "Chemotherapy"), replace = TRUE, prob = c(0.5, 0.5))
+
+# Assign TreatmentResponse for Radiotherapy patients in stage 4a
+cancer_data$TreatmentResponse[cancer_data$TreatmentType == "Radiotherapy" & cancer_data$CancerStage == "4a"] <-
+sample(0:1, sum(cancer_data$CancerStage == "4a" & cancer_data$TreatmentType == "Radiotherapy"), replace = TRUE, prob = c(0.3, 0.7))
+
+# Assign TreatmentResponse for Radiotherapy patients in stage 4b
+cancer_data$TreatmentResponse[cancer_data$TreatmentType == "Radiotherapy" & cancer_data$CancerStage == "4b"] <-
+sample(0:1, sum(cancer_data$CancerStage == "4b" & cancer_data$TreatmentType == "Radiotherapy"), replace = TRUE, prob = c(0.4, 0.6))
+
+# Add a few NA's to the variable treatment response
+na_resp <- sample(1:n_patients, 20)   # Randomly select 20 indices 
+cancer_data$TreatmentResponse[na_resp] <- NA   # Assign NA to treatment response
+```
+
+# Print the first few rows of the generated data
+
+```{r}
+head(cancer_data)
+```
+
+# Save the simulated data to a CSV file
+
+```{r}
+write.csv(cancer_data, here("data","cancer_data1.csv"), row.names = FALSE)
+```
+
+## ---- checkdata --------
+
+```{r}
+summary(cancer_data)  # View the summary of the data frame
+
+dplyr::glimpse(cancer_data)  # Catch a glimpse of the data frame
+
+na_counts <- colSums(is.na(cancer_data))  # determine if there are NA's in the data frame
+print(na_counts)   
+```
+
+## ---- Cleandata --------
+
+```{r}
+# Remove rows with NA values
+df_cleaned <- cancer_data %>% drop_na()
+
+# Check for NA's agian, just to double check
+colSums(is.na(df_cleaned))
+
+# Check the dimensions of the cleaned data frame
+dim(df_cleaned)
+```
+
+## ---- Plotting --------
+
+```{r}
+# Plotting gender against cancer stage.I used stacked barplot to easily visulaize the difference
+ggplot(df_cleaned, aes(x = Gender, fill = CancerStage)) + geom_bar(position = "stack") + labs(title = "Gender vs. Cancer Stage", x = "Gender", y = "Count", fill = "Cancer Stage") + theme_minimal()
+
+# Plotting age against cancer stage.I used a boxplot to easily visulaize the difference
+ggplot(df_cleaned, aes(x = CancerStage, y = Age, fill = CancerStage)) + geom_boxplot() + labs(title = "Age vs. Cancer Stage", x = "Cancer Stage", y = "Age") + theme_minimal()
+
+# Plotting Treatment response as a function of cancer stage
+ggplot(df_cleaned, aes(x = CancerStage, fill = as.factor(TreatmentResponse))) + geom_bar(position = "fill") + labs(title = "Treatment Response by Cancer Stage", x = "Cancer Stage", y = "Proportion", fill = "Treatment Response") + theme_minimal()
+
+# Plotting treatment response as a function of treatment type
+ggplot(df_cleaned, aes(x = TreatmentType, fill = as.factor(TreatmentResponse))) + geom_bar(position = "fill") + labs(title = "Treatment Response by Treatment Type", x = "Treatment Type", y = "Proportion", fill = "Treatment Response") + theme_minimal()
+```
+
+# Fit a logistic regression model
+
+```{r}
+logit_model <- glm(TreatmentResponse ~ TreatmentType + CancerStage, data = df_cleaned, family = binomial)
+
+# Summarize the model
+summary(logit_model)
+```
+
+# Interpretation: This analysis looks at how treatment type (Chemotherapy or Radiotherapy) and cancer stage (4a or 4b) affect whether a patient responds to treatment. The results show that patients with stage 4b cancer are much less likely to respond compared to those with stage 4a (Estimate = -1.16, p \< 0.001). However, there is no strong evidence that Radiotherapy works differently from Chemotherapy in terms of response (Estimate = 0.23, p = 0.291). The starting point of the model (Estimate = 1.26) suggests that patients in stage 4a receiving Chemotherapy have a relatively better chance of responding, while cancer stage seems to play a bigger role in treatment success than treatment type.
+
+# Frequency table for cancer stage stratified by treatment response
+
+```{r}
+table(df_cleaned$CancerStage, df_cleaned$TreatmentResponse)
+
+# Create a contingency table
+treatment_response_table <- table(df_cleaned$CancerStage, df_cleaned$TreatmentResponse)
+
+# Perform Chi-Square Test
+chisq_test_treatment <- chisq.test(treatment_response_table) 
+print(chisq_test_treatment)
+```
+
+# Interpretation: The Chi-squared test results show a significant relationship between Cancer Stage and Treatment Response. The Chi-squared value of 27.619 and a p-value of 1.477e-07 indicate that the differences in treatment responses across cancer stages are unlikely to have occurred by chance. With 1 degree of freedom (df = 1), the test suggests that the stage of cancer influences whether a patient responds positively to treatment. Therefore, we can conclude that Cancer Stage plays a significant role in determining Treatment Response.
