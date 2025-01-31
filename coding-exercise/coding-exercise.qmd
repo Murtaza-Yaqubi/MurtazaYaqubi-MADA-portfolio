@@ -1,12 +1,15 @@
 ---
 title: "R Coding Exercise"
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
-Placeholder file for the future R coding exercise.
+### Loading and checking data:
 
-#Loading and checking data:
-
-First we begin by installing necessary packages for this analysis if we haven't already. Once the package installs, we need to load the package using library function. We need to load the packages before use, every time we open R.
+First we begin by installing necessary packages for this analysis if we haven't already.
+Once the package installs, we need to load the package using library function.
+We need to load the packages before use, every time we open R.
 
 ```{r}
 install.packages("dslabs", repos = "https://cran.rstudio.com/")
@@ -40,7 +43,7 @@ Let us determine the type of object "gapminder" is.
 class(gapminder)
 ```
 
-# Processing Data:
+### Processing Data:
 
 For this part of data prcessing we want to focus on Africa only so we will create an objest called africadata that holds all the data for Africa.
 
@@ -79,9 +82,10 @@ summary(pop_lf.exp) #get a summary of the data.
 dim(pop_lf.exp) #check the dimnensions of the data. 
 ```
 
-# Plotting data:
+### Plotting data:
 
-Now we can start generating plots for the newly created variables. We will generate a scatterplot and plot life expecrtancy as a function of infant mortality.
+Now we can start generating plots for the newly created variables.
+We will generate a scatterplot and plot life expecrtancy as a function of infant mortality.
 
 ```{r}
 pt1 <- inf.mort_lf.exp %>% 
@@ -103,11 +107,13 @@ plot(pt2) #generate the plot.
 print(pt2) # print the plot. 
 ```
 
-As shown in figure 2, there a not very strong correlation between life expectancy and population. Note: x-axis is set to log scale.
+As shown in figure 2, there a not very strong correlation between life expectancy and population.
+Note: x-axis is set to log scale.
 
-Figure 2 shows individual streaks of data poits that go together. This is mainly because the data is collected over many years and each streak represents data from an individual year.
+Figure 2 shows individual streaks of data poits that go together.
+This is mainly because the data is collected over many years and each streak represents data from an individual year.
 
-# More data processing:
+### More data processing:
 
 Determine the number of NA's for infant moratlity.
 
@@ -135,7 +141,7 @@ str(year_2000)  #get overview of the data structure.
 summary(year_2000)  #summary of the dataset called year_2000 that has 51 observations and 9 variables. 
 ```
 
-# More plottig:
+### More plotting:
 
 We are going to generate scatterplots using the new dataset to further investigate it.
 
@@ -150,16 +156,18 @@ pt2.v2 <- year_2000 %>%    #generate a scatterplot of population as a function o
 plot(pt2.v2)  #generate the plot.
 ```
 
-#Fitting sample models:
+### Fitting sample models:
 
-Fit a regession model for the two columns in the year_2000 dataset. The fit has life expectancy as an outcome and infant mortality as predictor.
+Fit a regession model for the two columns in the year_2000 dataset.
+The fit has life expectancy as an outcome and infant mortality as predictor.
 
 ```{r}
 fit1 <- lm(life_expectancy ~ infant_mortality, data = year_2000) #fit regression model with life expectancy as the outcome and infant mortality as predictor. Note: In the lm function, outcome lies on the left of tilde sign and predictor on the right side.  
 summary(fit1) #get the summary of the sample model
 ```
 
-Interpretation: Based on the p-value (p=2.83\*10\^-8), we conclude that there is strong evidence to reject the null hypothesis, which states that there is no relationship between infant mortality and life expectancy.This analysis shows a strong negative link between infant mortality and life expectancy in the year 2000. It means that for every extra infant death per 1,000 live births, life expectancy decreases by about 0.19 years (around 2.3 months).
+Based on the p-value (p=2.83\*10\^-8), we conclude that there is strong evidence to reject the null hypothesis, which states that there is no relationship between infant mortality and life expectancy.This analysis shows a strong negative link between infant mortality and life expectancy in the year 2000.
+It means that for every extra infant death per 1,000 live births, life expectancy decreases by about 0.19 years (around 2.3 months).
 
 Fit a regression model with life expectancy as outcome and population as predictor from the year_2000 dataset.
 
@@ -169,17 +177,18 @@ fit2 <- lm(life_expectancy ~ population, data = year_2000) #fit regession model 
 summary(fit2) #get the summary for the fitted model.
 ```
 
-Interpretation: In this model, based on the p-value (0.6159), the population variable does not have a significant effect on life expectancy. It’s likely not a meaningful predictor for life expectancy in this dataset.
+In this model, based on the p-value (0.6159), the population variable does not have a significant effect on life expectancy.
+It’s likely not a meaningful predictor for life expectancy in this dataset.
 
 \`\`\`
 
-#########################################################################
+######################################################################### 
 
-#This section was contributed to by Shaun van den Hurk
+### This section was contributed to by Shaun van den Hurk
 
-
-We will be working with another dataset from the dslabs package again. The different datasets that are available in the package can be seen online by viewing the details on CRAN. The website for the respective PDF with information on different datasets can be found here: https://cran.r-project.org/web/packages/dslabs/dslabs.pdf 
-
+We will be working with another dataset from the dslabs package again.
+The different datasets that are available in the package can be seen online by viewing the details on CRAN.
+The website for the respective PDF with information on different datasets can be found here: https://cran.r-project.org/web/packages/dslabs/dslabs.pdf
 
 We will work with a dataset that evaluates contagious disease data for US states.
 
@@ -201,7 +210,8 @@ print(us_contagious_diseases)
 
 ```
 
-We see that there are 16 065 variables and 6 observations,with the main columns being disease, state, year, weeks reporting,count, and population. We also see some of the diseases in the dataset and some of the associated figures. 
+We see that there are 16 065 variables and 6 observations,with the main columns being disease, state, year, weeks reporting,count, and population.
+We also see some of the diseases in the dataset and some of the associated figures.
 We see that the the minimum year in the dataset is 1928 and the maximum is 2011.
 Information is reported per week in the year and the total number where cases were reported gives the weeks reporting (from 0 to 52).
 The diseases investigated are: Hepatitis A, Measles, Mumps, Pertussis,Polio, Rubella, and Smallpox.
@@ -224,8 +234,7 @@ us_illness_20y |> filter(if_any(everything(), is.na)) #Filter used, If_any helps
 
 We see that there are no NA values in the dataset and so we do not need to do further data cleaning to address any NA values.
 
-
-Further data analysis:
+### Further data analysis:
 
 We would like to know how many cases of Hepatitis A there were in 2010 across all States.We will name the result as an assigned object.
 
@@ -238,18 +247,13 @@ hep_A_2010_count <- sum(hepatitis_A_2010 $count)
 
 ```
 
-We see that there were 4060 cases of Hepatitis A in 2010. We can view our intermediate object that was created "hepatitis_A_2010" and visually see that New York was the State with the highest number of cases. 
+We see that there were 4060 cases of Hepatitis A in 2010.
+We can view our intermediate object that was created "hepatitis_A_2010" and visually see that New York was the State with the highest number of cases.
 Of course we could generate code to filter and evaluate this further too.
 
 The code from above can be edited and used to evaluate any other disease and year combination present in the dataset (e.g. Measles and Georgia).
 
-
 We want to visually see which state had the highest number of Hepatitis A cases in 2010.
-
-
-
-
-
 
 ```{r}
 #Generate a bar chart that displays Hepatitis A case numbers by state from the year 2010
@@ -260,8 +264,9 @@ ggplot(data = hepatitis_A_2010, aes(x =state, y =count)) + geom_bar(stat = "iden
 
 We would then like to see which year had the highest number of cases of Measles.
 
-We will first filter out the Measles cases and create an object from the filtered cases. We will then get the total number of cases from all the states per year. This will then be used to give us the year with the highest number of cases.
-
+We will first filter out the Measles cases and create an object from the filtered cases.
+We will then get the total number of cases from all the states per year.
+This will then be used to give us the year with the highest number of cases.
 
 ```{r}
 #Use the filter function and view the results
@@ -271,17 +276,19 @@ print(measles_cases)
 
 ```
 
-From this evaluation we can see that our dataset for the reported measles cases ends in 2002 and not 2010 (or 2011) like the other diseases in the reported dataset. 
+From this evaluation we can see that our dataset for the reported measles cases ends in 2002 and not 2010 (or 2011) like the other diseases in the reported dataset.
 So our period of evaluation for measles is 1990 to 2002.
 
-From our summary we also see that the max value in the "count" column is 9598, and we could use this to query the state and year with the highest case if we wanted. 
+From our summary we also see that the max value in the "count" column is 9598, and we could use this to query the state and year with the highest case if we wanted.
 But we want the highest number of total cases per year and so will continue with that workflow.
 
-We first want to see which states were actually included in the dataset. We will use the unique function from the dplyr package to identify these.
+We first want to see which states were actually included in the dataset.
+We will use the unique function from the dplyr package to identify these.
 
 ```{r}
 unique(measles_cases$state)
 ```
+
 We can see that 51 States are included in the dataset.
 
 We will continue with our process to see the total number of measles cases by year.
@@ -308,17 +315,16 @@ ggplot(data = measles_total_cases, aes(x=year, y= total_cases)) + geom_line(grou
 
 ```
 
-The graph that we plotted helps to illustrate a decreasing trend in the number of cases of measles at the start of the 1990s. If we wanted to evaluate this further we could go back to the original dataset and plot the measles cases over a longer time frame.
+The graph that we plotted helps to illustrate a decreasing trend in the number of cases of measles at the start of the 1990s.
+If we wanted to evaluate this further we could go back to the original dataset and plot the measles cases over a longer time frame.
 
 The same work flow and code can be used and adjusted for different diseases and time frames.
 
-
-We now acknowledge that raw case numbers might be limited due to differences in population sizes. For example, New York has a much greater population, and so instead we want to compare the percentage of the population affected (number of cases per the population *100) which will give us a comparable metric.
+We now acknowledge that raw case numbers might be limited due to differences in population sizes.
+For example, New York has a much greater population, and so instead we want to compare the percentage of the population affected (number of cases per the population \*100) which will give us a comparable metric.
 
 We will calculate the percent of the population affected and add this as an additional column to the measles dataset.
 We will then order the dataset by the percent affected column to see this visually.
-
-
 
 ```{r}
 #adding an additonal column with the mutate function
@@ -330,8 +336,8 @@ measles_percent_top <- measles_percent |> arrange(desc(percent_affected))
 print(measles_percent_top)
 ```
 
-From this we can see that Idaho in 1991 had the highest value for percent of the population affected by measles. This was followed by California, Texas, Nevada and the Wisconsin, all in 1990.
-
+From this we can see that Idaho in 1991 had the highest value for percent of the population affected by measles.
+This was followed by California, Texas, Nevada and the Wisconsin, all in 1990.
 
 We will now run a basic linear regression model to investigate if there is any correlation between the percent of the population that is affected and the population size.
 
@@ -344,9 +350,4 @@ summary(measles_cases_model)
 
 ```
 
-Based on these results it appears that there is not a statistically significant relationship between the the percent of the population affected by measles and the population size.Although perhaps this could be evaluated over a longer time frame since the bulk of the cases occured within the first few years of 1990s within our filtered dataset. 
-
-
-
-
-
+Based on these results it appears that there is not a statistically significant relationship between the the percent of the population affected by measles and the population size.Although perhaps this could be evaluated over a longer time frame since the bulk of the cases occured within the first few years of 1990s within our filtered dataset.

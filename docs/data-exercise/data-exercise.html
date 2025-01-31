@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Exercise – Murtaza Yaqubi’s Data Analysis Portfolio</title>
+<title>data-exercise – Murtaza Yaqubi's Data Analysis Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -165,39 +165,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Data Exercise</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>Placeholder file for the data exercise.</p>
-<section id="r-script-for-simulatedartificial-data-examples" class="level1">
-<h1>R script for simulated/artificial data examples</h1>
-<section id="packages" class="level2">
-<h2 class="anchored" data-anchor-id="packages">—- packages ——–</h2>
-</section>
-</section>
-<section id="make-sure-the-packages-are-installed" class="level1">
-<h1>make sure the packages are installed</h1>
-</section>
-<section id="load-required-packages" class="level1">
-<h1>Load required packages</h1>
+<section id="data-exercise" class="level2">
+<h2 class="anchored" data-anchor-id="data-exercise">Data Exercise</h2>
+<p>R script for simulated/artificial data examples</p>
+<section id="packages" class="level3">
+<h3 class="anchored" data-anchor-id="packages">Packages:</h3>
+<p>make sure the packages are installed</p>
+<p>Load required packages</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -232,27 +211,22 @@ Attaching package: 'lubridate'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+</section>
 <section id="setup" class="level2">
-<h2 class="anchored" data-anchor-id="setup">—- setup ——–</h2>
-</section>
-</section>
-<section id="set-a-seed-for-reproducibility" class="level1">
-<h1>Set a seed for reproducibility</h1>
+<h2 class="anchored" data-anchor-id="setup">Setup:</h2>
+<p>Set a seed for reproducibility</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="define-the-number-of-observations-patients-to-generate" class="level1">
-<h1>Define the number of observations (patients) to generate</h1>
+<p>Define the number of observations (patients) to generate</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>n_patients <span class="ot">&lt;-</span> <span class="dv">590</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="makedata" class="level2">
-<h2 class="anchored" data-anchor-id="makedata">—- makedata ——–</h2>
 </section>
-</section>
-<section id="create-an-empty-data-frame-with-placeholders-for-variables" class="level1">
-<h1>Create an empty data frame with placeholders for variables</h1>
+<section id="make-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="make-the-data">Make the data:</h2>
+<p>Create an empty data frame with placeholders for variables</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cancer_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>( </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">PatientID =</span> <span class="fu">numeric</span>(n_patients), </span>
@@ -270,9 +244,7 @@ Attaching package: 'lubridate'</code></pre>
 <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">TreatmentResponse =</span> <span class="fu">integer</span>(n_patients) <span class="co"># 1 = Cured, 2 = Death </span></span>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="display-the-structure-of-the-empty-data-frame" class="level1">
-<h1>Display the structure of the empty data frame</h1>
+<p>Display the structure of the empty data frame</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cancer_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -292,45 +264,31 @@ Attaching package: 'lubridate'</code></pre>
  $ TreatmentResponse : int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
 </div>
 </div>
-</section>
-<section id="variable-1-patient-id" class="level1">
-<h1>Variable 1: Patient ID</h1>
+<p>Variable 1: Patient ID</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>PatientID <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n_patients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-2-age-numeric-variable" class="level1">
-<h1>Variable 2: Age (numeric variable)</h1>
+<p>Variable 2: Age (numeric variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>Age <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n_patients, <span class="at">mean =</span> <span class="dv">75</span>, <span class="at">sd =</span> <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-3-gender-categorical-variable" class="level1">
-<h1>Variable 3: Gender (categorical variable)</h1>
+<p>Variable 3: Gender (categorical variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>Gender <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>), n_patients, <span class="at">replace =</span> <span class="cn">TRUE</span>), as.character)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-4-enrollment-date" class="level1">
-<h1>Variable 4: Enrollment date</h1>
+<p>Variable 4: Enrollment date</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>EnrollmentDate <span class="ot">&lt;-</span> cancer_data<span class="sc">$</span>EnrollmentDate <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="fu">sample</span>(<span class="fu">seq</span>(<span class="at">from =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="st">"2017-08-01"</span>), <span class="at">to =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="st">"2017-12-15"</span>), <span class="at">by =</span> <span class="st">"days"</span>), n_patients, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-5-body-mass-index-bmi-numeric-variable" class="level1">
-<h1>Variable 5: Body Mass Index (BMI) (numeric variable)</h1>
+<p>Variable 5: Body Mass Index (BMI) (numeric variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>BMI <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n_patients, <span class="at">min =</span> <span class="dv">17</span>, <span class="at">max =</span> <span class="dv">21</span>), <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-6-blood-pressure-numeric-variable" class="level1">
-<h1>Variable 6: Blood Pressure (numeric variable)</h1>
+<p>Variable 6: Blood Pressure (numeric variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>BloodPressure <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n_patients, <span class="at">min =</span> <span class="dv">170</span>, <span class="at">max =</span> <span class="dv">190</span>), <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-7-smoking-history-categorical-variable" class="level1">
-<h1>Variable 7: Smoking history (categorical variable)</h1>
+<p>Variable 7: Smoking history (categorical variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>SmokingHistory <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Yes"</span>, <span class="st">"No"</span>), n_patients, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>)), as.character)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -338,15 +296,11 @@ Attaching package: 'lubridate'</code></pre>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>na_smoke <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_patients, <span class="dv">53</span>) <span class="co"># Randomly select 53 indices </span></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>SmokingHistory[na_smoke] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># Assign NA to smoke history</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="varibale-8-cancer-stage-categorical-variable" class="level1">
-<h1>Varibale 8: Cancer stage (categorical variable)</h1>
+<p>Varibale 8: Cancer stage (categorical variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>CancerStage <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"4a"</span>, <span class="st">"4b"</span>), n_patients, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)), as.character)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-9-metastasis-categorial-variable" class="level1">
-<h1>Variable 9: Metastasis (categorial variable)</h1>
+<p>Variable 9: Metastasis (categorial variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>Metastasis <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"Yes"</span>, n_patients)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -354,9 +308,7 @@ Attaching package: 'lubridate'</code></pre>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>na_meta <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_patients, <span class="dv">17</span>) <span class="co"># Randomly select 17 indices </span></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>Metastasis[na_meta] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># Assign NA to Metastasis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-10-treatment-type-categorical-variable" class="level1">
-<h1>Variable 10: Treatment Type (categorical variable)</h1>
+<p>Variable 10: Treatment Type (categorical variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign treatment type for Chemotherapy and Radiotherapy patients in stage 4a</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>TreatmentType[<span class="sc">!</span><span class="fu">is.na</span>(cancer_data<span class="sc">$</span>CancerStage) <span class="sc">&amp;</span> cancer_data<span class="sc">$</span>CancerStage <span class="sc">==</span> <span class="st">"4a"</span>] <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Chemotherapy"</span>, <span class="st">"Radiotherapy"</span>), <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(cancer_data<span class="sc">$</span>CancerStage) <span class="sc">&amp;</span> cancer_data<span class="sc">$</span>CancerStage <span class="sc">==</span> <span class="st">"4a"</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">0.3</span>)), as.character)</span>
@@ -364,21 +316,15 @@ Attaching package: 'lubridate'</code></pre>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign treatment type for Chemotherapy and Radiotherapy patients in stage 4b</span></span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>TreatmentType[<span class="sc">!</span><span class="fu">is.na</span>(cancer_data<span class="sc">$</span>CancerStage) <span class="sc">&amp;</span> cancer_data<span class="sc">$</span>CancerStage <span class="sc">==</span> <span class="st">"4b"</span>] <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Chemotherapy"</span>, <span class="st">"Radiotherapy"</span>), <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(cancer_data<span class="sc">$</span>CancerStage) <span class="sc">&amp;</span> cancer_data<span class="sc">$</span>CancerStage <span class="sc">==</span> <span class="st">"4b"</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.7</span>)), as.character)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-11-date-of-begining-of-treatment-date-variable" class="level1">
-<h1>Variable 11: Date of begining of treatment (date variable)</h1>
+<p>Variable 11: Date of begining of treatment (date variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>TreatmentStartDate <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="fu">sample</span>(<span class="fu">seq</span>(<span class="at">from =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="st">"2018-01-01"</span>), <span class="at">to =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="st">"2018-05-31"</span>), <span class="at">by =</span> <span class="st">"days"</span>), n_patients, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-12-treatment-completion-date-date-variable" class="level1">
-<h1>Variable 12: Treatment completion date (date variable)</h1>
+<p>Variable 12: Treatment completion date (date variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>TreatmentEndDate <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="fu">sample</span>(<span class="fu">seq</span>(<span class="at">from =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="st">"2020-01-01"</span>), <span class="at">to =</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(<span class="st">"2020-05-31"</span>), <span class="at">by =</span> <span class="st">"days"</span>), n_patients, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="variable-13-treatment-response-categorical-variable" class="level1">
-<h1>Variable 13: Treatment response (categorical variable)</h1>
+<p>Variable 13: Treatment response (categorical variable)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign TreatmentResponse for Chemotherapy patients in stage 4a</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>TreatmentResponse[cancer_data<span class="sc">$</span>TreatmentType <span class="sc">==</span> <span class="st">"Chemotherapy"</span> <span class="sc">&amp;</span> cancer_data<span class="sc">$</span>CancerStage <span class="sc">==</span> <span class="st">"4a"</span>] <span class="ot">&lt;-</span></span>
@@ -400,9 +346,7 @@ Attaching package: 'lubridate'</code></pre>
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>na_resp <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n_patients, <span class="dv">20</span>)   <span class="co"># Randomly select 20 indices </span></span>
 <span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>cancer_data<span class="sc">$</span>TreatmentResponse[na_resp] <span class="ot">&lt;-</span> <span class="cn">NA</span>   <span class="co"># Assign NA to treatment response</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="print-the-first-few-rows-of-the-generated-data" class="level1">
-<h1>Print the first few rows of the generated data</h1>
+<p>Print the first few rows of the generated data</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cancer_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -429,14 +373,12 @@ Attaching package: 'lubridate'</code></pre>
 6                 1</code></pre>
 </div>
 </div>
-</section>
-<section id="save-the-simulated-data-to-a-csv-file" class="level1">
-<h1>Save the simulated data to a CSV file</h1>
+<p>Save the simulated data to a CSV file</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(cancer_data, <span class="fu">here</span>(<span class="st">"data"</span>,<span class="st">"cancer_data1.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="checkdata" class="level2">
-<h2 class="anchored" data-anchor-id="checkdata">—- checkdata ——–</h2>
+<section id="checking-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="checking-the-data">Checking the data:</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cancer_data)  <span class="co"># View the summary of the data frame</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -505,8 +447,8 @@ $ TreatmentResponse  &lt;int&gt; 1, 1, 0, 1, NA, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 </div>
 </div>
 </section>
-<section id="cleandata" class="level2">
-<h2 class="anchored" data-anchor-id="cleandata">—- Cleandata ——–</h2>
+<section id="cleaning-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="cleaning-the-data">Cleaning the data:</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove rows with NA values</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df_cleaned <span class="ot">&lt;-</span> cancer_data <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>()</span>
@@ -530,8 +472,8 @@ $ TreatmentResponse  &lt;int&gt; 1, 1, 0, 1, NA, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 </div>
 </div>
 </section>
-<section id="plotting" class="level2">
-<h2 class="anchored" data-anchor-id="plotting">—- Plotting ——–</h2>
+<section id="plotting-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-the-data">Plotting the data:</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting gender against cancer stage.I used stacked barplot to easily visulaize the difference</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_cleaned, <span class="fu">aes</span>(<span class="at">x =</span> Gender, <span class="at">fill =</span> CancerStage)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gender vs. Cancer Stage"</span>, <span class="at">x =</span> <span class="st">"Gender"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">fill =</span> <span class="st">"Cancer Stage"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -571,9 +513,8 @@ $ TreatmentResponse  &lt;int&gt; 1, 1, 0, 1, NA, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 </div>
 </div>
 </section>
-</section>
-<section id="fit-a-logistic-regression-model" class="level1">
-<h1>Fit a logistic regression model</h1>
+<section id="fit-a-logistic-regression-model" class="level3">
+<h3 class="anchored" data-anchor-id="fit-a-logistic-regression-model">Fit a logistic regression model:</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>logit_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(TreatmentResponse <span class="sc">~</span> TreatmentType <span class="sc">+</span> CancerStage, <span class="at">data =</span> df_cleaned, <span class="at">family =</span> binomial)</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -602,12 +543,8 @@ AIC: 617.02
 Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
-</section>
-<section id="interpretation-this-analysis-looks-at-how-treatment-type-chemotherapy-or-radiotherapy-and-cancer-stage-4a-or-4b-affect-whether-a-patient-responds-to-treatment.-the-results-show-that-patients-with-stage-4b-cancer-are-much-less-likely-to-respond-compared-to-those-with-stage-4a-estimate--1.16-p-0.001.-however-there-is-no-strong-evidence-that-radiotherapy-works-differently-from-chemotherapy-in-terms-of-response-estimate-0.23-p-0.291.-the-starting-point-of-the-model-estimate-1.26-suggests-that-patients-in-stage-4a-receiving-chemotherapy-have-a-relatively-better-chance-of-responding-while-cancer-stage-seems-to-play-a-bigger-role-in-treatment-success-than-treatment-type." class="level1">
-<h1>Interpretation: This analysis looks at how treatment type (Chemotherapy or Radiotherapy) and cancer stage (4a or 4b) affect whether a patient responds to treatment. The results show that patients with stage 4b cancer are much less likely to respond compared to those with stage 4a (Estimate = -1.16, p &lt; 0.001). However, there is no strong evidence that Radiotherapy works differently from Chemotherapy in terms of response (Estimate = 0.23, p = 0.291). The starting point of the model (Estimate = 1.26) suggests that patients in stage 4a receiving Chemotherapy have a relatively better chance of responding, while cancer stage seems to play a bigger role in treatment success than treatment type.</h1>
-</section>
-<section id="frequency-table-for-cancer-stage-stratified-by-treatment-response" class="level1">
-<h1>Frequency table for cancer stage stratified by treatment response</h1>
+<p>This analysis looks at how treatment type (Chemotherapy or Radiotherapy) and cancer stage (4a or 4b) affect whether a patient responds to treatment. The results show that patients with stage 4b cancer are much less likely to respond compared to those with stage 4a (Estimate = -1.16, p &lt; 0.001). However, there is no strong evidence that Radiotherapy works differently from Chemotherapy in terms of response (Estimate = 0.23, p = 0.291). The starting point of the model (Estimate = 1.26) suggests that patients in stage 4a receiving Chemotherapy have a relatively better chance of responding, while cancer stage seems to play a bigger role in treatment success than treatment type.</p>
+<p>Frequency table for cancer stage stratified by treatment response</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df_cleaned<span class="sc">$</span>CancerStage, df_cleaned<span class="sc">$</span>TreatmentResponse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -630,11 +567,10 @@ data:  treatment_response_table
 X-squared = 15.014, df = 1, p-value = 0.0001067</code></pre>
 </div>
 </div>
+<p>The Chi-squared test results show a significant relationship between Cancer Stage and Treatment Response. The Chi-squared value of 27.619 and a p-value of 1.477e-07 indicate that the differences in treatment responses across cancer stages are unlikely to have occurred by chance. With 1 degree of freedom (df = 1), the test suggests that the stage of cancer influences whether a patient responds positively to treatment. Therefore, we can conclude that Cancer Stage plays a significant role in determining Treatment Response.</p>
+
+
 </section>
-<section id="interpretation-the-chi-squared-test-results-show-a-significant-relationship-between-cancer-stage-and-treatment-response.-the-chi-squared-value-of-27.619-and-a-p-value-of-1.477e-07-indicate-that-the-differences-in-treatment-responses-across-cancer-stages-are-unlikely-to-have-occurred-by-chance.-with-1-degree-of-freedom-df-1-the-test-suggests-that-the-stage-of-cancer-influences-whether-a-patient-responds-positively-to-treatment.-therefore-we-can-conclude-that-cancer-stage-plays-a-significant-role-in-determining-treatment-response." class="level1">
-<h1>Interpretation: The Chi-squared test results show a significant relationship between Cancer Stage and Treatment Response. The Chi-squared value of 27.619 and a p-value of 1.477e-07 indicate that the differences in treatment responses across cancer stages are unlikely to have occurred by chance. With 1 degree of freedom (df = 1), the test suggests that the stage of cancer influences whether a patient responds positively to treatment. Therefore, we can conclude that Cancer Stage plays a significant role in determining Treatment Response.</h1>
-
-
 </section>
 
 </main> <!-- /main -->
