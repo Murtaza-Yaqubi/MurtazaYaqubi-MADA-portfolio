@@ -4,9 +4,11 @@ auther: "Murtaza Yaqubi"
 editor: visual
 ---
 
-### Dataset Introduction:  
+### Dataset Introduction:
 
 This heart disease dataset is acquired from one o f the multispecialty hospitals in India. This dataset contains anonymized patient records related to cardiovascular disease (CVD) risk factors and diagnoses. This dataset consists of 1000 subjects so each row represents a patient, with features like age, gender, blood pressure, cholesterol levels, and clinical indicators (e.g., ST depression, chest pain type). This dataset will be useful for generating helpful insights into cardiovasclar diseases and can be used for research purposes. This dataset was obtained from mendeley data where it was first published in April of 2021.
+
+This dataset can be accessed at <https://data.mendeley.com/datasets/dzz48mvjht/1>
 
 ### Lets begin by installing and loading libraries:
 
@@ -37,7 +39,7 @@ Do younger individuals (e.g., age \< 40) with normal cholesterol levels (within 
 
 For this analysis I will be using target which is the outcome of interest and is described as abcense or pressence of heart disease and some of the predictors of interest are age, serum cholesterol, resting BP, and old peak. The goal for this analysis is to be able observe if young patients with normal cholesterol but high BP/ST depression have higher CVD rates than expected.
 
-### Breakdown of the analysis: 
+### Breakdown of the analysis:
 
 The analysis will first isolate younger individuals with clinically normal cholesterol levels to examine their risk of cardiovascular disease (CVD) when other factors like high blood pressure or ST depression are present. Patients will be categorized based on these secondary risk factors, and descriptive analysis will compare CVD prevalence among groups, such as those with normal cholesterol but elevated blood pressure versus those with entirely normal profiles. This step aims to reveal potential associations between non-traditional risk factors and CVD in younger populations.
 
