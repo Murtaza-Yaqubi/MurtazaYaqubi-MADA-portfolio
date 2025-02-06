@@ -1,0 +1,163 @@
+---
+title: "cdcdata-exercise.qmd"
+author: Murtaza Yaqubi
+editor: visual
+---
+
+First we start by installing and loading necessary libraries for our analysis as per usual.
+
+```{r}
+library(here)
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(naniar)
+library(ggplot2)
+library(scales)
+library(forcats)
+```
+
+### Introduction:
+
+This dataset contains information on heart disease mortality among U.S. adults aged 35 and older, stratified by state/territory and county from 2019 to 2021. The data was obtained from the CDC website (https://data.cdc.gov/Heart-Disease-Stroke-Prevention/Heart-Disease-Mortality-Data-Among-US-Adults-35-by/55yu-xksw/data_preview).
+
+Key variables in the dataset include Year, Location (State, County), Geographic Level, Class, Data Source, Race, Gender, and others. For this analysis, the focus will be on the variables: Year, Location (State), Gender, and Race.
+
+### Importing data:
+
+We will import our dataset and take an initial look at the data.
+
+```{r}
+getwd()
+cdc_heart <- read_csv("Data/Heart disease mortality among US adults.csv")
+
+head(cdc_heart)  # get a preview of the data set
+
+dim(cdc_heart)   # get the dimensions of the data set
+
+summary(cdc_heart)   # get a summary of the data set
+
+glimpse(cdc_heart)    # get a glimpse of the data set
+```
+
+### Processing the data:
+
+First, we'll clean the data by renaming variables to make them more understandable. Then, we'll remove any `NA`values from the dataset. Next, we'll filter the data by Gender, State, Race, and GeographicLevel to extract relevant observations. After that, we'll select the variables of interest:Year, State, GeographicLevel, Gender, Race and Case_numbers. We'll arrange the data by State and, finally, convert Gender and Race to factors.
+
+```{r}
+df_cleaned <- cdc_heart %>% 
+  rename(State = LocationAbbr,          # renaming of variables
+         Gender = Stratification1,
+         Race = Stratification2,
+         Mortality = Data_Value) %>% 
+  drop_na(Mortality) %>%         # removing NA's 
+  filter(Gender != "Overall",     # filtering for Gender to not include overall
+         State != "DC",    # filtering for State to not include DC because it is no a state.
+         GeographicLevel == "County",   # filter for GeographicLevels to only include county
+         Race != "Overall")  %>%   # filtering Race to exclude overall from the observations.  
+  select(Year, State, GeographicLevel, Gender, Race, Mortality) %>% # selecting varibales of interest
+  arrange(State) %>%   # arranging the order of the column "State"
+  mutate(Gender = as.factor(Gender), Race = as.factor(Race))   # converting Gender and factor from characters to factors
+
+
+view(df_cleaned)   # get a preview of the data set. 
+  
+gg_miss_var(df_cleaned)   # making sure there aren't any NA's  
+
+summary(df_cleaned)   # get a summary of the data set
+```
+
+### Plotting the data:
+
+```{r}
+
+df_cleaned %>%     # generate a plot to get the counts for "State"
+  ggplot(aes(State)) +  
+  geom_bar(fill = "tomato") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+df_cleaned %>%    # generate a plot to get the counts for "Gender"
+  ggplot(aes(Gender, fill = Gender)) +
+  geom_bar(width = 0.5, alpha = 0.7) +
+  scale_fill_manual(values = c("Male" = "dodgerblue", "Female" = "deeppink")) +
+  theme_bw()
+
+
+# Recode the elements in the race variable so that it can fit in the plot and also add custom colors to the bars. 
+df_cleaned %>%     
+  mutate(Race = fct_recode(Race, 
+                           "Multiracial" = "More than one race",
+                           "AI/AN" = "American Indian or Alaska Native", 
+                           "NH/PI" = "Native Hawaiian or Other Pacific Islander")) %>% 
+  ggplot(aes(Race, fill = Race)) +   # plot to get the counts of "Race"   
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  scale_fill_manual(values = c("White" = "firebrick", 
+                               "Black" = "thistle", 
+                               "Asian" = "powderblue", 
+                               "Hispanic" = "darkorchid", 
+                               "AI/AN" = "turquoise", 
+                               "NH/PI" = "goldenrod", 
+                               "Multiracial" = "chartreuse"))
+
+# Plot Gender and Race by mortality.
+df_cleaned %>% 
+  ggplot(aes(Gender, Mortality, fill = factor(Race))) +
+  geom_col() + 
+  coord_flip() +   # flip the chart to the side
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  facet_wrap(~Race) +   # create individual charts by race
+  ggtitle("Men vs Women mortality rates") +  # title of the chart
+  xlab("Mortality per 100,000") +   # label for x axis
+  ylab("Race")   # label for y axis
+
+
+# Create a table that provides the number and percent of mortality pe state. 
+state_totals <- df_cleaned %>%
+  group_by(State) %>%       # Group by State
+  summarise(mortality_cases = sum(Mortality)) %>%  # Sum the cases
+  mutate(Percent_mortality = percent_format(accuracy = 0.001)(mortality_cases / sum(mortality_cases))) %>%   # this chunck of code adds percent sign within 3 decimal points.
+  arrange(desc(mortality_cases))  # Sort from highest to lowest
+
+print(state_totals)  # View the results
+
+# Ten states with the highest mortality rates.  
+top_10 <- state_totals %>% 
+  slice_max(order_by = mortality_cases, n = 10) %>% 
+  select(everything())
+
+top_10
+
+
+# Ten states with the lowest mortality rates. 
+bottom_10 <- state_totals %>% 
+  slice_min(order_by = mortality_cases, n = 10) %>% 
+  select(everything()) %>% 
+  arrange(-mortality_cases)
+
+bottom_10
+
+
+# Check the distribution.
+df_cleaned %>% 
+ggplot(aes(sample = Mortality)) + 
+  stat_qq() +       # use Q-Q plot          
+  stat_qq_line(color = "tomato") +
+  labs(title = "Q-Q Plot for Normality Check") +
+  theme_bw()
+
+df_cleaned %>% 
+ggplot(aes(x = Mortality)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "midnightblue", color = "black") +  
+  geom_density(color = "red", linewidth = 1) +  
+  labs(title = "Histogram with Density Curve", x = "Mortality", y = "Density") +
+  theme_minimal()
+
+# Check the mean and Standard Deviation. 
+mean_mortality <- mean(df_cleaned$Mortality)
+mean_mortality
+
+Sd_mortality <- sd(df_cleaned$Mortality)
+Sd_mortality
+
+```
