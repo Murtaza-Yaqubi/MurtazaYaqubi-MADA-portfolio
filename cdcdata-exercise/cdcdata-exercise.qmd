@@ -163,16 +163,19 @@ Sd_mortality
 
 ```
 
-*******************************************************
+------------------------------------------------------------------------
 
-*****************************************************
+------------------------------------------------------------------------
 
-******************************************************
+------------------------------------------------------------------------
 
+## **Part 2**
 
-This part is contributed to by Shaun van den Hurk
+#### This part is contributed to by Shaun van den Hurk
 
 I have used ChatGPT to generate the code to reproduce synthetic data to match the raw data and the data analysis that was performed.
+
+For my prompt I copied the original code and the I copied the results and figures from the original data. I asked it to provide code to generate synthetic data to try to reproduce the original data. I had to provide multiple prompts with the original data and had to correct how graphs were displayed.
 
 
 ```{r}
@@ -204,7 +207,6 @@ synthetic_mortality_data <- tibble(
   Synthetic_Mortality_Cases = synthetic_mortality_cases
 )
 ```
-
 
 ```{r}
 ### Display the first few rows
@@ -252,9 +254,7 @@ synthetic_mortality_data %>%
   labs(title = "Men vs Women Mortality Rates (Synthetic Data)", x = "Mortality per 100,000", y = "Race")
 ```
 
-
 I am going to display how close the original and synthetic data is with some summary statistics/tables below
-
 
 ```{r}
 ### Compare summary statistics with original dataset
@@ -283,19 +283,12 @@ print(synthetic_top_10)
 
 ```
 
-
-
-
-
-We can see that overall the data is similar to the original data but there are distinct differences in the "shape" of the data, such as the number of males and females and the breakdown of the different race groups within the data which can be seen in the graphs.
-Adsitionally, the mean and standard deviation for factors such as mortality were somewhat distinct but similar. We could specify that we wanted the data/result to be more closely related to the original mean and standard deviation if desired, depending on what we intend to do with the synthetic data.
-
+We can see that overall the data is similar to the original data but there are distinct differences in the "shape" of the data, such as the number of males and females and the breakdown of the different race groups within the data which can be seen in the graphs. Adsitionally, the mean and standard deviation for factors such as mortality were somewhat distinct but similar. We could specify that we wanted the data/result to be more closely related to the original mean and standard deviation if desired, depending on what we intend to do with the synthetic data.
 
 I believe that the synthetic data generation focuses on the overall values and not specifics and so it mixes the data up in a way that the overall pattern is similar, although individual variables are different.
 
-If it is important to keep the distribution of the data more closely aligned to the original data within each variable we could specify a range for each variable while generating our synthetic data.This would be important if we want to evaluate certain patterns between variables. 
-But care must be taken to make sure that the synthetic data is not a direct repeat of the original data (especially if there is the risk of identifying information).
+If it is important to keep the distribution of the data more closely aligned to the original data within each variable we could specify a range for each variable while generating our synthetic data.This would be important if we want to evaluate certain patterns between variables. But care must be taken to make sure that the synthetic data is not a direct repeat of the original data (especially if there is the risk of identifying information).
 
-
-
+If I were to repeat this process I would spend more time on providing a more comprehensive prompt for the AI model to help generate my code. I would have summarised all of the results more clearly and provided the summary and indicated that it was important to produce data that resembles it more closely. I think that breaking things down into key components might have helped for the generation of the synthetic data to be of a greater quality and more closely related to the original data.
+However, I think that it still did a good job of producing synthetic data similar to the original set, although with marked differences which could be addressed.
 
