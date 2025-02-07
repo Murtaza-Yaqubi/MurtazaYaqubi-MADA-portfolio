@@ -7,6 +7,7 @@ editor: visual
 First we start by installing and loading necessary libraries for our analysis as per usual.
 
 ```{r}
+
 library(here)
 library(tidyverse)
 library(dplyr)
@@ -161,3 +162,140 @@ Sd_mortality <- sd(df_cleaned$Mortality)
 Sd_mortality
 
 ```
+
+*******************************************************
+
+*****************************************************
+
+******************************************************
+
+
+This part is contributed to by Shaun van den Hurk
+
+I have used ChatGPT to generate the code to reproduce synthetic data to match the raw data and the data analysis that was performed.
+
+
+```{r}
+### Load necessary libraries
+library(tidyverse)
+
+
+### Set seed for reproducibility
+set.seed(1234)
+
+### Generate synthetic dataset
+num_states <- 50
+synthetic_states <- c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")
+
+### Simulate mortality cases using a normal distribution
+synthetic_genders <- sample(c("Male", "Female"), num_states, replace = TRUE)
+synthetic_races <- sample(c("White", "Black", "Asian", "Hispanic", "AI/AN", "NH/PI", "Multiracial"), num_states, replace = TRUE)
+synthetic_mortality_cases <- round(rnorm(num_states, mean = 100000, sd = 80000))
+synthetic_mortality_cases <- pmax(synthetic_mortality_cases, 5000)  # Ensure all values are positive
+
+### Compute synthetic percent mortality
+synthetic_percent_mortality <- synthetic_mortality_cases / sum(synthetic_mortality_cases) * 100
+
+### Create synthetic dataframe
+synthetic_mortality_data <- tibble(
+  Synthetic_State = synthetic_states,
+  Synthetic_Gender = synthetic_genders,
+  Synthetic_Race = synthetic_races,
+  Synthetic_Mortality_Cases = synthetic_mortality_cases
+)
+```
+
+
+```{r}
+### Display the first few rows
+print(head(synthetic_mortality_data))
+
+### Visualize distributions
+# Mortality cases by state (alphabetically sorted)
+synthetic_mortality_data %>%
+  ggplot(aes(x = reorder(Synthetic_State, Synthetic_State), y = Synthetic_Mortality_Cases)) +
+  geom_bar(stat = "identity", fill = "tomato") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(title = "Synthetic Mortality Cases by State (Alphabetical Order)", x = "State", y = "Mortality Cases")
+
+# Histogram for mortality cases
+synthetic_mortality_data %>%
+  ggplot(aes(x = Synthetic_Mortality_Cases)) +
+  geom_histogram(bins = 20, fill = "midnightblue", color = "black") +
+  geom_density(color = "red", linewidth = 1) +
+  labs(title = "Histogram of Synthetic Mortality Cases", x = "Mortality Cases", y = "Density")
+
+# Gender distribution
+synthetic_mortality_data %>%
+  ggplot(aes(Synthetic_Gender, fill = Synthetic_Gender)) +
+  geom_bar(width = 0.5, alpha = 0.7) +
+  scale_fill_manual(values = c("Male" = "dodgerblue", "Female" = "deeppink")) +
+  theme_bw() +
+  labs(title = "Synthetic Gender Distribution", x = "Gender", y = "Count")
+
+# Race distribution
+synthetic_mortality_data %>%
+  ggplot(aes(Synthetic_Race, fill = Synthetic_Race)) +
+  geom_bar() +
+  geom_text(stat='count', aes(label=..count..), angle=90, vjust=0.5, hjust=1.1, size=3) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  scale_fill_manual(values = c("White" = "firebrick", "Black" = "thistle", "Asian" = "powderblue", "Hispanic" = "darkorchid", "AI/AN" = "turquoise", "NH/PI" = "goldenrod", "Multiracial" = "chartreuse")) +
+  labs(title = "Synthetic Race Distribution", x = "Race", y = "Count")
+
+# Mortality by gender and race
+synthetic_mortality_data %>%
+  ggplot(aes(Synthetic_Gender, Synthetic_Mortality_Cases, fill = factor(Synthetic_Race))) +
+  geom_col() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  coord_flip() +
+  facet_wrap(~Synthetic_Race) +
+  labs(title = "Men vs Women Mortality Rates (Synthetic Data)", x = "Mortality per 100,000", y = "Race")
+```
+
+
+I am going to display how close the original and synthetic data is with some summary statistics/tables below
+
+
+```{r}
+### Compare summary statistics with original dataset
+original_summary <- tibble(
+  Mean_Mortality_Original = 135456.5,
+  SD_Mortality_Original = 120374.2,
+  Mean_Mortality_Synthetic = mean(synthetic_mortality_cases),
+  SD_Mortality_Synthetic = sd(synthetic_mortality_cases)
+)
+print(original_summary)
+
+### Top 10 States by Mortality Cases
+original_top_10 <- tibble(
+  Original_State = c("TX", "GA", "OK", "VA", "CA", "NC", "TN", "MS", "OH", "KY"),
+  Synthetic_State = c("TX", "GA", "OK", "VA", "CA", "NC", "TN", "MS", "OH", "KY"),
+  Synthetic_Mortality_Cases = c(505060.8, 308311.2, 260597.1, 215457.8, 202419.4, 185048.8, 182244.2, 181185.9, 173150.1, 171416.4),
+  Synthetic_Percent_Mortality = c(9.566, 5.839, 4.936, 4.081, 3.834, 3.505, 3.452, 3.432, 3.280, 3.247)
+)
+print(original_top_10)
+
+# Compare original and synthetic top 10 states
+synthetic_top_10 <- synthetic_mortality_data %>%
+  arrange(desc(Synthetic_Mortality_Cases)) %>%
+  slice(1:10)
+print(synthetic_top_10)
+
+```
+
+
+
+
+
+We can see that overall the data is similar to the original data but there are distinct differences in the "shape" of the data, such as the number of males and females and the breakdown of the different race groups within the data which can be seen in the graphs.
+Adsitionally, the mean and standard deviation for factors such as mortality were somewhat distinct but similar. We could specify that we wanted the data/result to be more closely related to the original mean and standard deviation if desired, depending on what we intend to do with the synthetic data.
+
+
+I believe that the synthetic data generation focuses on the overall values and not specifics and so it mixes the data up in a way that the overall pattern is similar, although individual variables are different.
+
+If it is important to keep the distribution of the data more closely aligned to the original data within each variable we could specify a range for each variable while generating our synthetic data.This would be important if we want to evaluate certain patterns between variables. 
+But care must be taken to make sure that the synthetic data is not a direct repeat of the original data (especially if there is the risk of identifying information).
+
+
+
+
