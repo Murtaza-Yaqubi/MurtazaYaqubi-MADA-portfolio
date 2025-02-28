@@ -177,7 +177,6 @@ I have used ChatGPT to generate the code to reproduce synthetic data to match th
 
 For my prompt I copied the original code and the I copied the results and figures from the original data. I asked it to provide code to generate synthetic data to try to reproduce the original data. I had to provide multiple prompts with the original data and had to correct how graphs were displayed.
 
-
 ```{r}
 ### Load necessary libraries
 library(tidyverse)
@@ -289,6 +288,4 @@ I believe that the synthetic data generation focuses on the overall values and n
 
 If it is important to keep the distribution of the data more closely aligned to the original data within each variable we could specify a range for each variable while generating our synthetic data.This would be important if we want to evaluate certain patterns between variables. But care must be taken to make sure that the synthetic data is not a direct repeat of the original data (especially if there is the risk of identifying information).
 
-If I were to repeat this process I would spend more time on providing a more comprehensive prompt for the AI model to help generate my code. I would have summarised all of the results more clearly and provided the summary and indicated that it was important to produce data that resembles it more closely. I think that breaking things down into key components might have helped for the generation of the synthetic data to be of a greater quality and more closely related to the original data.
-However, I think that it still did a good job of producing synthetic data similar to the original set, although with marked differences which could be addressed.
-
+If I were to repeat this process I would spend more time on providing a more comprehensive prompt for the AI model to help generate my code. I would have summarised all of the results more clearly and provided the summary and indicated that it was important to produce data that resembles it more closely. I think that breaking things down into key components might have helped for the generation of the synthetic data to be of a greater quality and more closely related to the original data. However, I think that it still did a good job of producing synthetic data similar to the original set, although with marked differences which could be addressed.

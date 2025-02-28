@@ -1,0 +1,350 @@
+---
+title: "fitting-exercise.qmd"
+author: "Murtaza Yaqubi"
+editor: visual
+---
+
+# Install and load libraries.
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(tidymodels)
+library(readr)
+library(here)
+library(GGally)
+library(corrplot)
+library(pROC)
+```
+
+# Import data.
+
+```{r}
+
+# Load the data
+trial <- read_csv("data/Mavoglurant_A2121_nmpk.csv")
+
+# View the dimensions of the data set to insure proper import
+dim(trial)
+
+# View summary of the data
+summary(trial)
+
+# View column names
+colnames(trial)
+
+# Convert DOSE to factor
+trial$DOSE <- as.factor(trial$DOSE)
+```
+
+# Plot the data.
+
+```{r}
+
+# Plot time against DV
+trial %>% 
+  ggplot(aes(TIME, DV, group = ID, color = factor(DOSE))) +
+  geom_line(alpha = 0.7) +
+  labs(title = "Time vs DV by dose",
+       x = "Time",
+       y = "DV") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+
+# Plot Time agianst DV by Dose
+ggplot(trial, aes(x = TIME, y = DV, group = ID, color = factor(DOSE))) +
+  geom_line(alpha = 0.7) +
+  facet_wrap(~ DOSE, labeller = labeller(dose = function(x) paste("Dose:", x))) +
+  scale_color_manual(values = c("50" = "steelblue", "37.5" = "firebrick", "25" = "purple")) +
+  labs(title = "Time vs DV by dose",
+       x = "Time",
+       y = "DV") +
+  theme_minimal()
+
+```
+
+Brief description: The two plots represent the relationship between "Time" and "DV" (dependent variable), separated by different doses.
+
+In the first plot, titled "Time vs DV by dose," we see overlapping lines for each dose level (25, 37.5, and 50). The lines show a rapid decline in "DV" as "Time" increases, with the higher dose (50) resulting in a sharper decrease compared to the lower doses (25 and 37.5). The plot helps visualize how different doses affect the "DV" over time, with the higher doses showing a more significant decrease in the dependent variable.
+
+The second plot, titled "Time vs DV by dose," shows a faceted layout where each dose (25, 37.5, and 50) has its own panel. Each panel displays the same trend: "DV" decreases rapidly at the start of the time period and then levels off, with the highest dose (50) exhibiting the most substantial initial drop. The separation of doses into individual panels makes it easier to compare the effects of each dose on "DV" over time.
+
+# Cleaning data.
+
+```{r}
+# Filterind OCC to only include 1
+occ_trial <- trial %>% 
+  filter(OCC == 1) %>% 
+  select(everything()) 
+  
+# View summary of the data
+summary(occ_trial)
+
+# Step 1: Exclude observations where TIME == 0 and compute the sum of DV for each individual (ID)
+trial_without_time0 <- occ_trial %>%
+  filter(TIME != 0) %>%
+  group_by(ID) %>%
+  summarize(Y = sum(DV, na.rm = TRUE)) %>%
+  ungroup()
+
+# Step 2: Create a data frame with only observations where TIME == 0
+trial_time0 <- occ_trial %>%
+  filter(TIME == 0)
+
+# Step 3: Join the two data frames
+final_df <- trial_time0 %>%
+  left_join(trial_without_time0, by = "ID")
+
+# View the resulting data frame
+print(final_df)
+
+
+#Convert RACE and SEX to factors and keep only the specified variables
+df_cleaned <- final_df %>%
+  mutate(
+    RACE = as.factor(RACE),
+    SEX = as.factor(SEX)
+  ) %>%
+  select(Y, DOSE, AGE, SEX, RACE, WT, HT)
+
+# View the resulting data frame
+print(df_cleaned)
+
+```
+
+# Exploratory Data Analysis.
+
+```{r}
+# Generating summary table
+df_summary <- df_cleaned %>%
+  summarise(
+    mean_Y = mean(Y, na.rm = TRUE),
+    sd_Y = sd(Y, na.rm = TRUE),
+    mean_AGE = mean(AGE, na.rm = TRUE),
+    sd_AGE = sd(AGE, na.rm = TRUE),
+    mean_WT = mean(WT, na.rm = TRUE),
+    sd_WT = sd(WT, na.rm = TRUE),
+    mean_HT = mean(HT, na.rm = TRUE),
+    sd_HT = sd(HT, na.rm = TRUE),
+    count_dose_25 = sum(DOSE == levels(DOSE)[1], na.rm = TRUE),
+    count_dose_37.5 = sum(DOSE == levels(DOSE)[2], na.rm = TRUE),
+    count_dose_50 = sum(DOSE == levels(DOSE)[3], na.rm = TRUE)
+  )
+
+# View the resulting summary table
+print(df_summary)
+```
+
+The summary table shows the means and standard deviations of Y, AGE, WT and HT. The table also shows the counts of different levels of dose.
+
+# Plotting the variables.
+
+```{r}
+# Scatterplot between Y and DOSE
+df_cleaned %>%  
+ggplot(aes(DOSE, Y)) +
+  geom_point(size = 3, alpha = 0.7, color = "firebrick") +
+  labs(title = "Y vs DOSE", x = "DOSE", y = "Y") +
+  theme_bw()
+
+# Scatterplot between Y and AGE
+df_cleaned %>% 
+  ggplot(aes(AGE, Y)) +
+  geom_point(size = 3, alpha = 0.7, color = "red") +
+  labs(title = "Y vs AGE", x = "AGE", y = "Y") +
+  theme_bw()
+
+
+# Boxplot of Y by SEX
+ggplot(df_cleaned, aes(x = SEX, y = Y)) +
+  geom_boxplot() +
+  labs(title = "Y by SEX", x = "SEX", y = "Y")
+
+# Boxplot of Y by RACE
+ggplot(df_cleaned, aes(x = RACE, y = Y)) +
+  geom_boxplot() +
+  labs(title = "Y by RACE", x = "RACE", y = "Y")
+```
+
+Brief description of the plots :
+
+The purpose of generating these plots is to visually explore the relationships between the outcome variable "Y" and various predictors(SEX, RACE, AGE and DOSE), both continuous and categorical. These plots help in understanding how these predictors might influence or explain the variation in "Y" and give insight into potential trends, patterns, and differences across groups.
+
+1- Y vs DOSE: This scatterplot shows the relationship between "Y" and "DOSE." The data points are grouped around three distinct DOSE values (25, 37.5, and 50), and "Y" has a broad range at each DOSE level. There’s noticeable variation in "Y" at each dose, with dose value of 50 associated with highest "Y" values and dose value of 25 associated with lowest "Y" values.
+
+2- Y vs AGE: This scatterplot displays how "Y" changes with "AGE." The data is spread across different age values, and no clear linear relationship is observed. The spread of "Y" suggests that age has some effect, but the relationship appears complex, with substantial variation in "Y" at each age.
+
+3- Y by SEX: This boxplot compares "Y" between the two SEX categories. The plot shows that "SEX" category 1 has a higher median and a wider range of "Y" values compared to category 2. There are some outliers in both categories, indicating extreme values in "Y" within each group.
+
+4- Y by RACE: This boxplot compares "Y" across different "RACE" categories. There’s variability in "Y" across the races, with race group "2" having a higher median and wider spread of "Y" values. This suggests that "RACE" may influence "Y," with differences in the central tendency and variability across groups.
+
+# Distribution of varibales.
+
+```{r}
+# Barplot of sex
+ggplot(df_cleaned, aes(SEX, fill = factor(SEX))) +
+  geom_bar() +
+  labs(title = "Distribution of SEX", x = "SEX", y = "Count")
+
+# Barplot of race
+ggplot(df_cleaned, aes(RACE, fill = factor(RACE))) +
+  geom_bar() +
+  labs(title = "Distribution of RACE", x = "RACE", y = "Count")
+
+# Density plot of Y
+ggplot(df_cleaned, aes(Y)) +
+  geom_density(fill = "steelblue", alpha = 0.5) +
+  labs(title = "Density Plot of Y", x = "Y", y = "Density") +
+  theme_light()
+
+# Histogram of RACE
+ggplot(df_cleaned, aes(AGE)) +
+  geom_histogram(bins = 30, alpha = 0.7, color = "black", fill = "navyblue") +
+  labs(title = "Distribution of AGE", x = "AGE", y = "Frequency") +
+  theme_minimal()
+
+# Histogram of HT
+ggplot(df_cleaned, aes(HT)) +
+  geom_histogram(bins = 30, alpha = 0.7, color = "black", fill = "navyblue") +
+  labs(title = "Distribution of HT", x = "HT", y = "Frequency") +
+  theme_minimal()
+
+# Density plot of HT
+ggplot(df_cleaned, aes(HT)) +
+  geom_density(fill = "navyblue", alpha = 0.5) +
+  labs(title = "Density of HT", x = "HT", y = "Density") +
+  theme_bw()
+
+# Histogram of WT
+ggplot(df_cleaned, aes(WT)) +
+  geom_histogram(bins = 30, alpha = 0.7, color = "black", fill = "navyblue") +
+  labs(title = "Distribution of WT", x = "WT", y = "Frequency") +
+  theme_minimal()
+
+# Density plot of WT
+ggplot(df_cleaned, aes(WT)) +
+  geom_density(fill = "navyblue", alpha = 0.5) +
+  labs(title = "Density of WT", x = "WT", y = "Density") + 
+  theme_classic()
+
+```
+
+Brief discriptioln of the distribution plots:
+
+The purpose of generating these distribution plots is to understand the characteristics of the variables in the dataset and to visually explore their relationships and patterns. Here’s a breakdown of the importance of each type of plot:
+
+1- Distribution of SEX: The bar plot of "SEX" helps us understand the balance or imbalance between the two categories and due to the lack of a codebook, we don't know how "1" and "2" is designated to sexes. It provides insight into whether the dataset is skewed towards one category, which is important when considering potential biases or when using "SEX" as a predictor in models. In this case, the plot shows a clear imbalance, with a much higher count for category 1 than for category 2.
+
+2- Distribution of RACE: The bar plot of "RACE" shows how the different racial categories are distributed in the dataset. It is important to identify any disparities in the representation of different groups. This can be crucial for assessing the generalizability of any results or models. The plot shows a concentration of observations in categories 1 and 2, with a much smaller presence in other categories, indicating a potential concentration in certain racial groups.
+
+3- Density Plot of Y: The density plot of "Y" helps visualize the distribution and concentration of values for this continuous variable. This type of plot highlights the skewness or normality of the distribution, which is essential for choosing the right statistical methods. The plot reveals a skew towards lower values, which suggests that most observations have relatively lower values of "Y," with fewer higher values.
+
+4- Distribution of AGE: The histogram of "AGE" helps us understand the spread and concentration of age across the dataset. It shows whether certain age groups are overrepresented or underrepresented, which can be important when making inferences or generalizations. The plot reveals a multimodal distribution, indicating that there are age clusters, potentially suggesting different subgroups or patterns within the data.
+
+5- Distribution of HT: The histogram of "HT" gives us insight into the distribution of HT(potentially means height) in the dataset. Understanding this distribution can help with detecting outliers or inconsistencies in the data and provides a sense of the central tendency and variability. In this case, it shows a concentration around 1.8, indicating that most individuals in the sample have HT near this value.
+
+6- Distribution of WT: The histogram of "WT" helps assess the spread of WT(potentially means weight) in the dataset. By visually inspecting the distribution, we can check for skewness, outliers, or any unusual patterns. The relatively normal distribution suggests that WT is evenly distributed around the peak of 80, and the spread indicates the variability in WT within the sample.
+
+# Pair/correlation plots.
+
+```{r}
+
+# Select numeric variables to plot correlations
+numeric_vars <- df_cleaned %>% select(Y, AGE, WT, HT)
+
+# Compute the correlation matrix
+cor_matrix <- cor(numeric_vars, use = "complete.obs")
+
+# Plot the correlation matrix
+corrplot(cor_matrix, method = "circle")
+
+
+# Create a pair plot to show scatterplots and correlations
+ggpairs(df_cleaned %>% select(Y, AGE, WT, HT))
+
+```
+
+Brief description: The pair and correlation plots provide a clear overview of the relationships between the continuous variables "Y," "AGE," "WT," and "HT." In the first plot, which is a correlation matrix, the size and color of the circles reflect the strength of the correlations between variables. The darker circles indicate stronger correlations, while lighter circles show weaker correlations. From this plot, we observe that "Y" is negatively correlated with "WT" and "HT," meaning that as weight and height increase, "Y" tends to decrease, though the correlation with "HT" is weaker than with "WT." "AGE" has weak correlations with both "Y" and "WT," and there is a moderate negative correlation between "HT" and "WT," suggesting that as height increases, weight tends to decrease slightly.
+
+The second plot, which includes scatterplots and correlation coefficients, provides a more detailed view of these relationships. For instance, the scatterplot between "Y" and "WT" shows a slight negative relationship, with a correlation coefficient of -0.213, while the relationship between "Y" and "HT" is also slightly negative at -0.158. The scatterplot between "WT" and "HT" reveals a stronger positive correlation of 0.600, meaning that weight and height tend to increase together. These plots are useful for understanding both the visual and statistical relationships between the variables, highlighting patterns and providing specific numerical values for these associations.
+
+#Fit models.
+
+```{r}
+
+# Fit the first model with DOSE as the predictor
+model1 <- lm(Y ~ DOSE, data = df_cleaned)
+
+# Fit the second model with all predictors
+model2 <- lm(Y ~ ., data = df_cleaned)
+
+# Compute RMSE and R-squared for Model 1 (DOSE only)
+pred1 <- predict(model1, df_cleaned)  # Predict values
+rmse1 <- sqrt(mean((pred1 - df_cleaned$Y)^2))  # RMSE calculation
+r_squared1 <- summary(model1)$r.squared  # R-squared for Model 1
+
+# Compute RMSE and R-squared for Model 2 (all predictors)
+pred2 <- predict(model2, df_cleaned)  # Predict values
+rmse2 <- sqrt(mean((pred2 - df_cleaned$Y)^2))  # RMSE calculation
+r_squared2 <- summary(model2)$r.squared  # R-squared for Model 2
+
+# Print the results
+cat("Model 1 (DOSE only):\n")
+cat("RMSE: ", rmse1, "\n")
+cat("R-squared: ", r_squared1, "\n\n")
+
+cat("Model 2 (All predictors):\n")
+cat("RMSE: ", rmse2, "\n")
+cat("R-squared: ", r_squared2, "\n")
+
+```
+
+Interpretation: The first model, using only "DOSE" as the predictor for the continuous outcome "Y," had an RMSE of 666.31, indicating that the model's predictions were fairly far from the actual values. The R-squared value of 0.515 suggests that "DOSE" alone explains about 51.5% of the variation in "Y." While this indicates a moderate relationship, it also shows that other factors are likely influencing "Y."
+
+When we included all predictors in the second model, the RMSE decreased to 590.31, showing that the predictions were more accurate. The R-squared increased to 0.62, meaning the model now explains 62% of the variation in "Y." This improvement highlights that the additional predictors, like AGE, WT, HT, etc contribute valuable information in explaining the outcome.
+
+In summary, while "DOSE" explains most of the variation in "Y," adding more predictors improves the model's performance and provides a more complete understanding of the outcome.
+
+```{r}
+# Step 1: Fit a logistic regression model with DOSE as the main predictor for SEX
+model1 <- glm(SEX ~ DOSE, data = df_cleaned, family = binomial)
+
+# Step 2: Fit a logistic regression model with all predictors
+model2 <- glm(SEX ~ ., data = df_cleaned, family = binomial)
+
+# Step 3: Compute predictions for both models
+# For Model 1 (DOSE only), get the predicted probabilities
+pred1_prob <- predict(model1, df_cleaned, type = "response")
+# For Model 2 (all predictors), get the predicted probabilities
+pred2_prob <- predict(model2, df_cleaned, type = "response")
+
+# Convert probabilities to binary outcomes based on a threshold of 0.5
+pred1_class <- ifelse(pred1_prob > 0.5, 1, 0)
+pred2_class <- ifelse(pred2_prob > 0.5, 1, 0)
+
+# Step 4: Compute accuracy for both models
+accuracy1 <- mean(pred1_class == df_cleaned$SEX)  # Model 1 accuracy
+accuracy2 <- mean(pred2_class == df_cleaned$SEX)  # Model 2 accuracy
+
+# Step 5: Compute ROC-AUC for both models
+roc1 <- roc(df_cleaned$SEX, pred1_prob)  # ROC curve for Model 1
+roc2 <- roc(df_cleaned$SEX, pred2_prob)  # ROC curve for Model 2
+
+# Step 6: Print the results
+cat("Model 1 (DOSE only):\n")
+cat("Accuracy: ", accuracy1, "\n")
+cat("ROC-AUC: ", auc(roc1), "\n\n")
+
+cat("Model 2 (All predictors):\n")
+cat("Accuracy: ", accuracy2, "\n")
+cat("ROC-AUC: ", auc(roc2), "\n")
+
+```
+
+Interpretation: For predicting the binary outcome "SEX," the first model with "DOSE" as the only predictor performed poorly, with an accuracy of 0 and a ROC-AUC of 0.59, indicating that "DOSE" alone does not effectively predict "SEX."
+
+However, when we included all predictors in the second model, the accuracy improved to 0.02, and the ROC-AUC jumped to 0.98. This dramatic improvement suggests that the other predictors, like age, race, and weight, are much more relevant for predicting "SEX" than "DOSE" alone. The high ROC-AUC indicates that the model with all predictors can effectively distinguish between the two categories of "SEX."
+
+In conclusion, while "DOSE" alone doesn’t help predict "SEX," including multiple predictors greatly enhances the model’s ability to correctly classify "SEX" and shows the importance of considering a wider range of factors.
