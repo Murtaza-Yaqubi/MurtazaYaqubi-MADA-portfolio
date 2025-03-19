@@ -16,6 +16,7 @@ library(here)
 library(GGally)
 library(corrplot)
 library(pROC)
+library(tidymodels)
 ```
 
 # Import data.
@@ -155,7 +156,6 @@ df_cleaned %>%
   geom_point(size = 3, alpha = 0.7, color = "red") +
   labs(title = "Y vs AGE", x = "AGE", y = "Y") +
   theme_bw()
-
 
 # Boxplot of Y by SEX
 ggplot(df_cleaned, aes(x = SEX, y = Y)) +
@@ -348,3 +348,164 @@ Interpretation: For predicting the binary outcome "SEX," the first model with "D
 However, when we included all predictors in the second model, the accuracy improved to 0.02, and the ROC-AUC jumped to 0.98. This dramatic improvement suggests that the other predictors, like age, race, and weight, are much more relevant for predicting "SEX" than "DOSE" alone. The high ROC-AUC indicates that the model with all predictors can effectively distinguish between the two categories of "SEX."
 
 In conclusion, while "DOSE" alone doesn’t help predict "SEX," including multiple predictors greatly enhances the model’s ability to correctly classify "SEX" and shows the importance of considering a wider range of factors.
+
+# Module 10: 
+# Data Prep
+```{r}
+# Removing RACE variable
+dat_10 <- df_cleaned %>% 
+  select(Y, DOSE, AGE, SEX, WT, HT)
+
+# Checking the dimensions of the data
+dim(dat_10) 
+
+# Quick look at the data structure
+glimpse(dat_10)
+
+
+# Set a fixed random seed value for reproducibility
+rngseed <- 1234
+
+# Train/Test Split (75% train, 25% test)
+# Set seed before splitting so the sample is reproducible.
+
+set.seed(rngseed)
+data_split <- initial_split(dat_10, prop = 0.75)
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+```
+
+# Model fitting
+```{r}
+# Model Fitting using tidymodels
+# We will fit:
+# Model 1: Y ~ DOSE
+# Model 2: Y ~ DOSE + AGE + SEX + WT + HT
+# And a null model: predicting the mean of Y
+
+
+# Define a linear regression specification (using lm)
+lm_spec <- linear_reg() %>% 
+  set_engine("lm")
+
+# Workflow for Model 1: using only DOSE as predictor
+wf_model1 <- workflow() %>%
+  add_formula(Y ~ DOSE) %>%
+  add_model(lm_spec)
+
+# Workflow for Model 2: using all predictors
+wf_model2 <- workflow() %>%
+  add_formula(Y ~ DOSE + AGE + SEX + WT + HT) %>%
+  add_model(lm_spec)
+
+# Fit the models using only the training data
+fit_model1 <- wf_model1 %>% fit(data = train_data)
+fit_model2 <- wf_model2 %>% fit(data = train_data)
+```
+
+# Model performance assessment 1
+```{r}
+
+# Compute predictions on the training data for the two models
+
+# Model 1: Only DOSE as predictor
+preds_model1 <- predict(fit_model1, new_data = train_data) %>%
+  bind_cols(train_data %>% select(Y))
+
+# Model 2: All predictors (DOSE, AGE, SEX, WT, HT)
+preds_model2 <- predict(fit_model2, new_data = train_data) %>%
+  bind_cols(train_data %>% select(Y))
+
+
+# 2. Compute RMSE for Model 1 and Model 2 using the yardstick function
+rmse_model1 <- rmse(preds_model1, truth = Y, estimate = .pred)
+rmse_model2 <- rmse(preds_model2, truth = Y, estimate = .pred)
+
+
+# Compute RMSE of a null model (predicts the mean of Y) "by hand"
+mean_Y <- mean(train_data$Y)
+preds_null <- train_data %>%
+  mutate(.pred = mean_Y)
+
+rmse_null <- rmse(preds_null, truth = Y, estimate = .pred)
+
+
+# Display the RMSE values for comparison
+cat("RMSE for Null Model:", rmse_null$.estimate, "\n")
+cat("RMSE for Model 1 (Only DOSE):", rmse_model1$.estimate, "\n")
+cat("RMSE for Model 2 (All Predictors):", rmse_model2$.estimate, "\n")
+
+```
+
+# Model performance assessment 2
+```{r}
+
+# Set the random seed for CV reproducibility
+set.seed(1234)
+
+
+# Create 10-fold cross-validation folds from the training data
+cv_folds <- vfold_cv(train_data, v = 10)
+
+
+# Evaluate the models using cross-validation
+# Compute RMSE for each fold and then average
+
+
+# For Model 1 (using only DOSE as predictor)
+cv_res_model1 <- fit_resamples(
+  wf_model1,
+  resamples = cv_folds,
+  metrics = metric_set(rmse)
+)
+
+# For Model 2 (using all predictors: DOSE, AGE, SEX, WT, HT)
+cv_res_model2 <- fit_resamples(
+  wf_model2,
+  resamples = cv_folds,
+  metrics = metric_set(rmse)
+)
+
+
+# Collect and display the cross-validated RMSE metrics
+cv_metrics_model1 <- collect_metrics(cv_res_model1)
+cv_metrics_model2 <- collect_metrics(cv_res_model2)
+
+cat("10-fold Cross-Validated RMSE Metrics for Model 1 (Only DOSE):\n")
+print(cv_metrics_model1)
+
+cat("\n10-fold Cross-Validated RMSE Metrics for Model 2 (All Predictors):\n")
+print(cv_metrics_model2)
+
+
+# Compare with the Null Model
+# Since the null model simply predicts the mean, its RMSE remains unchanged.
+
+# Compute the null model RMSE "by hand"
+mean_Y <- mean(train_data$Y)
+preds_null <- train_data %>% mutate(.pred = mean_Y)
+rmse_null <- rmse(preds_null, truth = Y, estimate = .pred)
+cat("\nRMSE for the Null Model (predicts mean of Y):", rmse_null$.estimate, "\n")
+
+```
+
+# Change random seed
+```{r}
+# Effect of Changing the Random Seed on CV Estimates
+# Create new CV folds with a different seed and compare RMSE.
+
+set.seed(4321)  # A different random seed
+cv_folds_alt <- vfold_cv(train_data, v = 10)
+
+cv_res_model1_alt <- fit_resamples(
+  wf_model1,
+  resamples = cv_folds_alt,
+  metrics = metric_set(rmse)
+)
+cv_metrics_model1_alt <- collect_metrics(cv_res_model1_alt)
+
+cat("\n10-fold Cross-Validated RMSE Metrics for Model 1 with a different seed:\n")
+print(cv_metrics_model1_alt)
+
+```
+
