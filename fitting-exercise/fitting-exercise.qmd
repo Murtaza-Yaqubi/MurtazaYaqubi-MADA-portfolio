@@ -524,8 +524,8 @@ library(dplyr)
 library(ggplot2)
 ```
 
-
 ## Model Predictions
+
 ```{r}
 # combine observed data and predicted data from all three models
 # use preds_model1, preds_model2, and preds_null
@@ -579,3 +579,57 @@ ggplot(dat, aes(x=Y_mod2, y=resid_mod2)) +
 
 ## Model predictions and uncertainty
 
+```{r}
+# set seed
+set.seed(rngseed)
+
+# bootstrap 100 times
+bootstrap <- rsample::bootstraps(train_data, times=100)
+
+# fit model 2 to each sample and make predictions
+pred <- purrr::map(bootstrap$splits, function(split) {
+  # extract sample
+  dat_boot <- rsample::analysis(split)
+  # fit model
+  model <- lm(Y ~ DOSE + AGE + SEX + WT + HT, data=dat_boot)
+  # make predictions
+  predict(model, newdata=train_data)
+})
+
+# convert predictions to df
+dat_pred <- as.data.frame(do.call(rbind, pred))
+
+# calculate median and 89% CI
+preds <- as.data.frame(
+  dat_pred %>% apply(2, quantile, c(0.055, 0.5, 0.945)) |> t() 
+)
+colnames(preds) <- list("lo", "median", "high")
+
+dat_plot <- cbind(dat, preds)
+```
+
+```{r}
+# plot predictions and bootstrap medians and CIs
+ggplot(dat_plot) +
+  geom_point(aes(x = Y_obs, y = median, color = "Bootstrap Median"), 
+             size=2) +
+  geom_errorbar(aes(x = Y_obs, y = median, ymin = lo, ymax = high,
+                color="Bootstrap Median")) +
+  geom_point(aes(x = Y_obs, y = Y_mod2, color = "Original Model"), 
+             size=2) +
+  geom_abline(slope = 1, intercept = 0) +
+  scale_x_continuous(limits=c(0,5700)) +
+  scale_y_continuous(limits=c(0,5700)) + 
+  scale_color_manual(values = c(
+    "Bootstrap Median" = "slateblue", 
+    "Original Model" = "gray30"
+    )) +
+  labs(
+    x = "Observed Values",
+    y = "Predicted Values"
+  )
+```
+
+The fitted results from the bootstrapped samples are very similar to those of model 2. Most, if not all, of the 89% confidence intervals computed from the bootstrapped samples contain the fitted estimate of model 2. The data points follow the x = y line very closely, which means that our predicted values are similar to our observed values; i.e., model 2 is performing well.
+
+## End of part 2
