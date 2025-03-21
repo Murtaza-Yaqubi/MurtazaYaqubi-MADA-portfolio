@@ -158,14 +158,23 @@ df_cleaned %>%
   theme_bw()
 
 # Boxplot of Y by SEX
-ggplot(df_cleaned, aes(x = SEX, y = Y)) +
-  geom_boxplot() +
-  labs(title = "Y by SEX", x = "SEX", y = "Y")
+ggplot(df_cleaned, aes(x = SEX, y = Y, fill = SEX)) +
+  geom_boxplot(outlier.color = "red", outlier.shape = 16) +
+  labs(title = "Y by SEX", x = "SEX", y = "Y") +
+  theme_minimal() +
+  scale_fill_manual(values = c("1" = "skyblue", "2" = "lightpink"))
 
 # Boxplot of Y by RACE
-ggplot(df_cleaned, aes(x = RACE, y = Y)) +
-  geom_boxplot() +
-  labs(title = "Y by RACE", x = "RACE", y = "Y")
+ggplot(df_cleaned, aes(x = RACE, y = Y, fill = RACE)) +
+  geom_boxplot(outlier.color = "red", outlier.shape = 16) +
+  labs(title = "Y by RACE", x = "RACE", y = "Y") +
+  theme_minimal() +
+  scale_fill_manual(values = c(
+    "1"    = "skyblue", 
+    "2"    = "lightcoral", 
+    "7"    = "lightgreen", 
+    "88"    = "plum"
+  ))
 ```
 
 Brief description of the plots :
@@ -349,9 +358,11 @@ However, when we included all predictors in the second model, the accuracy impro
 
 In conclusion, while "DOSE" alone doesn’t help predict "SEX," including multiple predictors greatly enhances the model’s ability to correctly classify "SEX" and shows the importance of considering a wider range of factors.
 
-# Module 10:
+### Module 10:
 
-# Data Prep
+### part 1
+
+### Data Prep
 
 ```{r}
 # Removing RACE variable
@@ -440,6 +451,7 @@ cat("RMSE for Model 1 (Only DOSE):", rmse_model1$.estimate, "\n")
 cat("RMSE for Model 2 (All Predictors):", rmse_model2$.estimate, "\n")
 
 ```
+These RMSE values show that both the dose-only model and the full model outperform the null model, which simply predicts the mean of Y. Model 1 (only DOSE) reduces the RMSE from 948.35 to about 702.79, and adding the other predictors in Model 2 brings the RMSE down further to around 627.27. In other words, each step of adding relevant predictors lowers the model’s error, suggesting that dose alone explains some variability in Y, but the additional predictors (AGE, SEX, WT, HT) offer further improvement.
 
 # Model performance assessment 2
 
@@ -493,6 +505,7 @@ rmse_null <- rmse(preds_null, truth = Y, estimate = .pred)
 cat("\nRMSE for the Null Model (predicts mean of Y):", rmse_null$.estimate, "\n")
 
 ```
+These 10-fold cross-validation results confirm that both the dose-only model (Model 1) and the full model (Model 2) outperform the null model (RMSE ≈ 948). Among the two, Model 2 achieves a lower average RMSE (≈ 653) than Model 1 (≈ 697), indicating that including additional predictors beyond dose reduces prediction error further. The standard errors (≈ 68 for Model 1 and 64 for Model 2) reflect the variability across the folds; even with that variability, Model 2’s mean cross-validated RMSE is still notably below Model 1’s, suggesting that it is the better-performing model overall.
 
 # Change random seed
 
@@ -514,6 +527,7 @@ cat("\n10-fold Cross-Validated RMSE Metrics for Model 1 with a different seed:\n
 print(cv_metrics_model1_alt)
 
 ```
+The 10-fold cross-validated RMSE for Model 1 with a different seed is 696.3747, with a standard error of about 67.95. This value is very similar to the earlier cross-validated RMSE for Model 1 (approximately 696.71), suggesting that the model's performance is robust to changes in the random seed and that the cross-validation results are stable.
 
 # This section added by Murphy John
 
@@ -633,3 +647,82 @@ ggplot(dat_plot) +
 The fitted results from the bootstrapped samples are very similar to those of model 2. Most, if not all, of the 89% confidence intervals computed from the bootstrapped samples contain the fitted estimate of model 2. The data points follow the x = y line very closely, which means that our predicted values are similar to our observed values; i.e., model 2 is performing well.
 
 ## End of part 2
+
+
+***********************************************************************************************************
+Part 3:
+Back to Murtaza Yaqubi
+
+
+# Final Evaluation Using Test Data
+```{r}
+# Make predictions on the test data using the full model (Model 2)
+# (fit_model2 was obtained using the training data in Part 1)
+preds_all_test <- predict(fit_model2, test_data) %>% 
+  bind_cols(test_data)
+
+# Compute RMSE for test data using Model 2
+rmse_all_test <- rmse(preds_all_test, truth = Y, estimate = .pred)
+
+# Prepare an evaluation list with RMSE metrics and best model designation.
+# Here, rmse_model1 is the RMSE for the dose-only model, rmse_model2 is for the full model on training data, and rmse_null is the RMSE for the null model.
+evaluation_list <- list(
+  RMSE_DOSE    = rmse_model1$.estimate,
+  RMSE_ALL     = rmse_model2$.estimate,
+  RMSE_ALL_TEST= rmse_all_test$.estimate,
+  Best_Model   = "All Predictors",
+  RMSE_NULL    = rmse_null$.estimate
+)
+print(evaluation_list)
+```
+Interpretaion: The evaluation metrics show that the null model has an RMSE of 948.3526, the dose-only model has an RMSE of 702.7909, and the full model ("All Predictors") achieves an RMSE of 627.2724 on the training data and 518.2239 on the test data, indicating that the full model outperforms the others.
+
+# Combine training and test predictions for plotting.
+```{r}
+# For training predictions, use preds_model2 from Part 1.
+preds_all_train <- preds_model2 %>% 
+  rename(.pred = Y_mod2, Y = Y_obs) %>% 
+  mutate(Data = "Train")
+
+# For test predictions, use fit_model2 from Part 1.
+preds_all_test <- predict(fit_model2, test_data) %>% 
+  bind_cols(test_data) %>% 
+  mutate(Data = "Test")
+
+# Combine training and test prediciotns 
+combined_preds <- bind_rows(preds_all_train, preds_all_test)
+
+# Plot predicted vs. observed values for both training and test data
+ggplot(combined_preds, aes(x = Y, y = .pred, color = Data)) +
+  geom_point(alpha = 0.6) +
+  scale_x_continuous(limits = c(0, 6000)) +  # Adjust x-axis limits as needed
+  scale_y_continuous(limits = c(0, 6000)) +  # Adjust y-axis limits as needed
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +
+  labs(
+    title = "Predicted vs. Observed Values (Model 2)",
+    x = "Observed Y",
+    y = "Predicted Y",
+    color = "Dataset"
+  ) +
+  theme_minimal()
+
+```
+Conclusion: This plot shows predicted versus observed values for both the training (blue points) and test (pink points) sets under the full model (Model 2). Most points cluster close to the diagonal (the dashed line), indicating that the model predicts Y accurately for both datasets. The primary “confusion” it reveals is that the test data actually fits in about the same range as the training data—there is no clear sign of higher error or systematic bias in the test set. Often one expects the test predictions to be slightly worse if the model were overfitted, but here the test points blend well with the training data points. This can happen if the test set has fewer extreme observations or if both sets come from the same distribution and the model generalizes effectively, which might initially surprise someone expecting a visible difference in the test results.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
