@@ -24,7 +24,7 @@ library(tidymodels)
 ```{r}
 
 # Load the data
-trial <- read_csv("data/Mavoglurant_A2121_nmpk.csv")
+trial <- read_csv(here::here("fitting-exercise/data/Mavoglurant_A2121_nmpk.csv")) #MJ: updating this with here function so I can load your data
 
 # View the dimensions of the data set to insure proper import
 dim(trial)
@@ -349,8 +349,10 @@ However, when we included all predictors in the second model, the accuracy impro
 
 In conclusion, while "DOSE" alone doesn’t help predict "SEX," including multiple predictors greatly enhances the model’s ability to correctly classify "SEX" and shows the importance of considering a wider range of factors.
 
-# Module 10: 
+# Module 10:
+
 # Data Prep
+
 ```{r}
 # Removing RACE variable
 dat_10 <- df_cleaned %>% 
@@ -376,6 +378,7 @@ test_data  <- testing(data_split)
 ```
 
 # Model fitting
+
 ```{r}
 # Model Fitting using tidymodels
 # We will fit:
@@ -404,6 +407,7 @@ fit_model2 <- wf_model2 %>% fit(data = train_data)
 ```
 
 # Model performance assessment 1
+
 ```{r}
 
 # Compute predictions on the training data for the two models
@@ -438,6 +442,7 @@ cat("RMSE for Model 2 (All Predictors):", rmse_model2$.estimate, "\n")
 ```
 
 # Model performance assessment 2
+
 ```{r}
 
 # Set the random seed for CV reproducibility
@@ -490,6 +495,7 @@ cat("\nRMSE for the Null Model (predicts mean of Y):", rmse_null$.estimate, "\n"
 ```
 
 # Change random seed
+
 ```{r}
 # Effect of Changing the Random Seed on CV Estimates
 # Create new CV folds with a different seed and compare RMSE.
@@ -509,3 +515,121 @@ print(cv_metrics_model1_alt)
 
 ```
 
+# This section added by Murphy John
+
+## Setup
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+## Model Predictions
+
+```{r}
+# combine observed data and predicted data from all three models
+# use preds_model1, preds_model2, and preds_null
+
+# update column names in pred dfs
+colnames(preds_model1) = c("Y_mod1", "Y_obs")
+colnames(preds_model2) = c("Y_mod2", "Y_obs")
+colnames(preds_null) = c("Y_obs","DOSE","AGE","SEX","WT","HT","Y_null")
+
+# combine obs values and pred values
+dat <- preds_null %>%
+  full_join(preds_model1, by="Y_obs") %>%
+  full_join(preds_model2, by="Y_obs") %>%
+  select(
+    "Y_obs",
+    "Y_null",
+    "Y_mod1",
+    "Y_mod2"
+  )
+```
+
+```{r}
+# pivot data for plotting
+dat1 <- dat %>%
+  tidyr::pivot_longer(cols = c(Y_null, Y_mod1, Y_mod2),
+                      names_to = "model", values_to = "pred")
+
+# add model type labels
+dat1$model <- factor(dat1$model, 
+                     levels = c("Y_mod1", "Y_mod2", "Y_null"), 
+                     labels = c("Univariable Model", "Multivariable Model", "Null Model"))
+
+# plot observed vs predicted values
+ggplot(dat1, aes(x=Y_obs, y=pred, color=model)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  scale_x_continuous(limits=c(0,5000)) +
+  scale_y_continuous(limits=c(0,5000)) 
+
+```
+
+```{r}
+# plot residuals vs predicted for multivariable model
+dat$resid_mod2 <- dat$Y_mod2 - dat$Y_obs
+
+ggplot(dat, aes(x=Y_mod2, y=resid_mod2)) +
+  geom_point() +
+  geom_abline(slope=0, intercept = 0) +
+  scale_y_continuous(limits=c(-2500,2500))
+```
+
+## Model predictions and uncertainty
+
+```{r}
+# set seed
+set.seed(rngseed)
+
+# bootstrap 100 times
+bootstrap <- rsample::bootstraps(train_data, times=100)
+
+# fit model 2 to each sample and make predictions
+pred <- purrr::map(bootstrap$splits, function(split) {
+  # extract sample
+  dat_boot <- rsample::analysis(split)
+  # fit model
+  model <- lm(Y ~ DOSE + AGE + SEX + WT + HT, data=dat_boot)
+  # make predictions
+  predict(model, newdata=train_data)
+})
+
+# convert predictions to df
+dat_pred <- as.data.frame(do.call(rbind, pred))
+
+# calculate median and 89% CI
+preds <- as.data.frame(
+  dat_pred %>% apply(2, quantile, c(0.055, 0.5, 0.945)) |> t() 
+)
+colnames(preds) <- list("lo", "median", "high")
+
+dat_plot <- cbind(dat, preds)
+```
+
+```{r}
+# plot predictions and bootstrap medians and CIs
+ggplot(dat_plot) +
+  geom_point(aes(x = Y_obs, y = median, color = "Bootstrap Median"), 
+             size=2) +
+  geom_errorbar(aes(x = Y_obs, y = median, ymin = lo, ymax = high,
+                color="Bootstrap Median")) +
+  geom_point(aes(x = Y_obs, y = Y_mod2, color = "Original Model"), 
+             size=2) +
+  geom_abline(slope = 1, intercept = 0) +
+  scale_x_continuous(limits=c(0,5700)) +
+  scale_y_continuous(limits=c(0,5700)) + 
+  scale_color_manual(values = c(
+    "Bootstrap Median" = "slateblue", 
+    "Original Model" = "gray30"
+    )) +
+  labs(
+    x = "Observed Values",
+    y = "Predicted Values"
+  )
+```
+
+The fitted results from the bootstrapped samples are very similar to those of model 2. Most, if not all, of the 89% confidence intervals computed from the bootstrapped samples contain the fitted estimate of model 2. The data points follow the x = y line very closely, which means that our predicted values are similar to our observed values; i.e., model 2 is performing well.
+
+## End of part 2
