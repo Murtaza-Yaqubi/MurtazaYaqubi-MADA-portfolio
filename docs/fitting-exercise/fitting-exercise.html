@@ -824,14 +824,15 @@ Setting direction: controls &lt; cases</code></pre>
 <p>Interpretation: For predicting the binary outcome “SEX,” the first model with “DOSE” as the only predictor performed poorly, with an accuracy of 0 and a ROC-AUC of 0.59, indicating that “DOSE” alone does not effectively predict “SEX.”</p>
 <p>However, when we included all predictors in the second model, the accuracy improved to 0.02, and the ROC-AUC jumped to 0.98. This dramatic improvement suggests that the other predictors, like age, race, and weight, are much more relevant for predicting “SEX” than “DOSE” alone. The high ROC-AUC indicates that the model with all predictors can effectively distinguish between the two categories of “SEX.”</p>
 <p>In conclusion, while “DOSE” alone doesn’t help predict “SEX,” including multiple predictors greatly enhances the model’s ability to correctly classify “SEX” and shows the importance of considering a wider range of factors.</p>
-<section id="module-10" class="level3">
-<h3 class="anchored" data-anchor-id="module-10">Module 10:</h3>
 </section>
-<section id="part-1" class="level3">
-<h3 class="anchored" data-anchor-id="part-1">part 1</h3>
+<section id="module-10" class="level1">
+<h1>Module 10:</h1>
 </section>
-<section id="data-prep" class="level3">
-<h3 class="anchored" data-anchor-id="data-prep">Data Prep</h3>
+<section id="part-1" class="level1">
+<h1>Part 1</h1>
+</section>
+<section id="data-preparation" class="level1">
+<h1>Data Preparation</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Removing RACE variable</span></span>
 <span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>dat_10 <span class="ot">&lt;-</span> df_cleaned <span class="sc">%&gt;%</span> </span>
@@ -865,7 +866,6 @@ $ HT   &lt;dbl&gt; 1.769997, 1.759850, 1.809847, 1.649993, 1.560052, 1.829862, 1
 <span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> <span class="fu">training</span>(data_split)</span>
 <span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
 </section>
 <section id="model-fitting" class="level1">
 <h1>Model fitting</h1>
@@ -1182,8 +1182,10 @@ RMSE for the Null Model (predicts mean of Y): 948.3526 </code></pre>
 <section id="end-of-part-2" class="level2">
 <h2 class="anchored" data-anchor-id="end-of-part-2">End of part 2</h2>
 <hr>
-<p>Part 3: Back to Murtaza Yaqubi</p>
 </section>
+</section>
+<section id="part-3-back-to-murtaza-yaqubi" class="level1">
+<h1>Part 3: Back to Murtaza Yaqubi</h1>
 </section>
 <section id="final-evaluation-using-test-data" class="level1">
 <h1>Final Evaluation Using Test Data</h1>
