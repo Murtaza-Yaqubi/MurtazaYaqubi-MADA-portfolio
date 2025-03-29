@@ -4,7 +4,7 @@ author: "Murtaza Yaqubi"
 editor: visual
 ---
 
-Load libraries we'll need for this analysis
+## Let's load the packages we need for this analysis
 
 ```{r}
 library(here)
@@ -15,7 +15,7 @@ library(tidymodels)
 library(readr)
 ```
 
-Set random seed for reproducibility
+## Set random seed for reproducibility
 
 ```{r}
 # Setting seed for reproducibility
@@ -23,7 +23,7 @@ rdmseed <- 1234
 set.seed(rdmseed)
 ```
 
-Load dataset
+## Loading dataset
 
 ```{r}
 # load data 
@@ -33,7 +33,7 @@ ml_df <- read_csv(here::here("ml-models-exercise/data/df_cleaned.csv"))
 head(ml_df)
 ```
 
-DATA PROCESSING
+## Data Processing
 
 ```{r}
 # Convert categorical variables to numeric so they're usable in models
@@ -47,7 +47,7 @@ ml_df$race_clean <- case_when(
 )
 ```
 
-# EDA - Correlation
+## EDA - Correlation
 
 ```{r}
 # Generate correlation matrix to understand relationships between numeric predictors
@@ -68,12 +68,13 @@ corrplot::corrplot(
 )
 ```
 
-# Feature engineering
+## Feature engineering
 
 ```{r}
-# Compute BMI using the standard formula: weight (kg) / height (m)^2
+# Creating a new variable: Body Mass Index (BMI)
 ml_df$BMI <- ml_df$WT / (ml_df$HT)^2
 
+# Checking a summary of the BMI values
 summary(ml_df$BMI)
 
 #Histogram to visualize distribution of BMI
@@ -87,14 +88,14 @@ ggplot(ml_df, aes(x = BMI)) +
   theme_minimal()
 ```
 
-# Model building
+## Model building
 
 ```{r}
 # Reset seed before modeling
 set.seed(rdmseed)
 ```
 
-# Linear model
+## Linear model
 
 ```{r}
 # Fit a standard linear regression model using all predictors
@@ -115,7 +116,7 @@ ggplot(ml_df, aes(x = Y, y = pred_lm)) +
   scale_y_continuous(limits = c(0, 4000))
 ```
 
-# LASSO
+## LASSO
 
 ```{r}
 set.seed(rdmseed)
@@ -147,7 +148,7 @@ ggplot(ml_df, aes(x = Y, y = pred_lasso)) +
   scale_y_continuous(limits = c(0, 4000))
 ```
 
-# Random Forest
+## Random Forest
 
 ```{r}
 set.seed(rdmseed)
@@ -174,7 +175,7 @@ ggplot(ml_df, aes(x = Y, y = pred_rf)) +
   scale_y_continuous(limits = c(0, 4000))
 ```
 
-# Tuning LASSO (apparent)
+## Tuning the LASSO model (without cross-validation)
 
 ```{r}
 set.seed(rdmseed)
@@ -224,7 +225,7 @@ ggplot(lasso_tune_df, aes(x = penalty, y = .estimate)) +
 
 ```
 
-# Tuning RF (apparent)
+## Tuning for our Random Forest model (without cross-validation)
 
 ```{r}
 # Create tuning grid for mtry and min_n
@@ -271,7 +272,7 @@ ggplot(rf_tune_df, aes(x = mtry, y = min_n, fill = .estimate)) +
   theme_minimal()
 ```
 
-# CV tuning for LASSO
+## Cross-validation for our LASSO model tuning
 
 ```{r}
 set.seed(rdmseed)
@@ -299,7 +300,7 @@ autoplot(lasso_tune_cv)
 
 ```
 
-# CV tuning for RF
+## Cross-validation tuning for our random forest model
 
 ```{r}
 # Tune RF using CV

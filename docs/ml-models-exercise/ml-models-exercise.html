@@ -209,7 +209,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Load libraries we’ll need for this analysis</p>
+<section id="lets-load-the-packages-we-need-for-this-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="lets-load-the-packages-we-need-for-this-analysis">Let’s load the packages we need for this analysis</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -271,13 +272,17 @@ Attaching package: 'readr'</code></pre>
     col_factor</code></pre>
 </div>
 </div>
-<p>Set random seed for reproducibility</p>
+</section>
+<section id="set-random-seed-for-reproducibility" class="level2">
+<h2 class="anchored" data-anchor-id="set-random-seed-for-reproducibility">Set random seed for reproducibility</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting seed for reproducibility</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>rdmseed <span class="ot">&lt;-</span> <span class="dv">1234</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(rdmseed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Load dataset</p>
+</section>
+<section id="loading-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="loading-dataset">Loading dataset</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data </span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ml_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"ml-models-exercise/data/df_cleaned.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -304,7 +309,9 @@ dbl (7): Y, DOSE, AGE, SEX, RACE, WT, HT
 6 2337.    25    27     1     2  74.1  1.83</code></pre>
 </div>
 </div>
-<p>DATA PROCESSING</p>
+</section>
+<section id="data-processing" class="level2">
+<h2 class="anchored" data-anchor-id="data-processing">Data Processing</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert categorical variables to numeric so they're usable in models</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>ml_df<span class="sc">$</span>SEX <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(ml_df<span class="sc">$</span>SEX)</span>
@@ -316,8 +323,9 @@ dbl (7): Y, DOSE, AGE, SEX, RACE, WT, HT
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.numeric</span>(ml_df<span class="sc">$</span>RACE)</span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="eda---correlation" class="level1">
-<h1>EDA - Correlation</h1>
+</section>
+<section id="eda---correlation" class="level2">
+<h2 class="anchored" data-anchor-id="eda---correlation">EDA - Correlation</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate correlation matrix to understand relationships between numeric predictors</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(ml_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(Y, AGE, WT, HT))</span>
@@ -355,13 +363,14 @@ tl.col, : "cl.lim" is not a graphical parameter</code></pre>
 </div>
 </div>
 </section>
-<section id="feature-engineering" class="level1">
-<h1>Feature engineering</h1>
+<section id="feature-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="feature-engineering">Feature engineering</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute BMI using the standard formula: weight (kg) / height (m)^2</span></span>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a new variable: Body Mass Index (BMI)</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>ml_df<span class="sc">$</span>BMI <span class="ot">&lt;-</span> ml_df<span class="sc">$</span>WT <span class="sc">/</span> (ml_df<span class="sc">$</span>HT)<span class="sc">^</span><span class="dv">2</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ml_df<span class="sc">$</span>BMI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Checking a summary of the BMI values</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ml_df<span class="sc">$</span>BMI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   18.69   24.54   26.38   26.63   29.70   32.21 </code></pre>
@@ -384,15 +393,15 @@ tl.col, : "cl.lim" is not a graphical parameter</code></pre>
 </div>
 </div>
 </section>
-<section id="model-building" class="level1">
-<h1>Model building</h1>
+<section id="model-building" class="level2">
+<h2 class="anchored" data-anchor-id="model-building">Model building</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset seed before modeling</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(rdmseed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="linear-model" class="level1">
-<h1>Linear model</h1>
+<section id="linear-model" class="level2">
+<h2 class="anchored" data-anchor-id="linear-model">Linear model</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a standard linear regression model using all predictors</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>lm_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span></span>
@@ -428,8 +437,8 @@ tl.col, : "cl.lim" is not a graphical parameter</code></pre>
 </div>
 </div>
 </section>
-<section id="lasso" class="level1">
-<h1>LASSO</h1>
+<section id="lasso" class="level2">
+<h2 class="anchored" data-anchor-id="lasso">LASSO</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(rdmseed)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -472,8 +481,8 @@ tl.col, : "cl.lim" is not a graphical parameter</code></pre>
 </div>
 </div>
 </section>
-<section id="random-forest" class="level1">
-<h1>Random Forest</h1>
+<section id="random-forest" class="level2">
+<h2 class="anchored" data-anchor-id="random-forest">Random Forest</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(rdmseed)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -511,8 +520,8 @@ tl.col, : "cl.lim" is not a graphical parameter</code></pre>
 </div>
 </div>
 </section>
-<section id="tuning-lasso-apparent" class="level1">
-<h1>Tuning LASSO (apparent)</h1>
+<section id="tuning-the-lasso-model-without-cross-validation" class="level2">
+<h2 class="anchored" data-anchor-id="tuning-the-lasso-model-without-cross-validation">Tuning the LASSO model (without cross-validation)</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(rdmseed)</span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -577,8 +586,8 @@ tl.col, : "cl.lim" is not a graphical parameter</code></pre>
 </div>
 </div>
 </section>
-<section id="tuning-rf-apparent" class="level1">
-<h1>Tuning RF (apparent)</h1>
+<section id="tuning-for-our-random-forest-model-without-cross-validation" class="level2">
+<h2 class="anchored" data-anchor-id="tuning-for-our-random-forest-model-without-cross-validation">Tuning for our Random Forest model (without cross-validation)</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create tuning grid for mtry and min_n</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
@@ -646,8 +655,8 @@ There were issues with some computations   A: x7   B: x7</code></pre>
 </div>
 </div>
 </section>
-<section id="cv-tuning-for-lasso" class="level1">
-<h1>CV tuning for LASSO</h1>
+<section id="cross-validation-for-our-lasso-model-tuning" class="level2">
+<h2 class="anchored" data-anchor-id="cross-validation-for-our-lasso-model-tuning">Cross-validation for our LASSO model tuning</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(rdmseed)</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -681,8 +690,8 @@ There were issues with some computations   A: x7   B: x7</code></pre>
 </div>
 </div>
 </section>
-<section id="cv-tuning-for-rf" class="level1">
-<h1>CV tuning for RF</h1>
+<section id="cross-validation-tuning-for-our-random-forest-model" class="level2">
+<h2 class="anchored" data-anchor-id="cross-validation-tuning-for-our-random-forest-model">Cross-validation tuning for our random forest model</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tune RF using CV</span></span>
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>rf_tune_cv <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
@@ -718,13 +727,13 @@ There were issues with some computations   A: x7   B: x7</code></pre>
 <pre><code>There were issues with some computations   A: x98   B: x97</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>There were issues with some computations   A: x115   B: x114</code></pre>
+<pre><code>There were issues with some computations   A: x114   B: x114</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>There were issues with some computations   A: x134   B: x133</code></pre>
+<pre><code>There were issues with some computations   A: x133   B: x132</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>There were issues with some computations   A: x151   B: x150</code></pre>
+<pre><code>There were issues with some computations   A: x150   B: x150</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>There were issues with some computations   A: x169   B: x168</code></pre>
