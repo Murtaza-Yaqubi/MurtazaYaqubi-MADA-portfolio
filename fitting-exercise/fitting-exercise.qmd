@@ -24,7 +24,7 @@ library(tidymodels)
 ```{r}
 
 # Load the data
-trial <- read_csv(here::here("fitting-exercise/data/Mavoglurant_A2121_nmpk.csv")) #MJ: updating this with here function so I can load your data
+trial <- read_csv(here::here("fitting-exercise/data/Mavoglurant_A2121_nmpk.csv")) 
 
 # View the dimensions of the data set to insure proper import
 dim(trial)
@@ -113,6 +113,7 @@ df_cleaned <- final_df %>%
 # View the resulting data frame
 print(df_cleaned)
 
+write_csv(df_cleaned, "../ml-models-exercise/data/df_cleaned.csv")
 ```
 
 # Exploratory Data Analysis.
