@@ -57,14 +57,14 @@ cor_matrix <- cor(ml_df %>% select(Y, AGE, WT, HT))
 corrplot::corrplot(
   cor_matrix, 
   method = 'color',         # Use colored heatmap instead of plain numbers
-  col = colorRampPalette(c("darkblue", "gray", "firebrick"))(200),
-  addCoef.col = "black",    # Add correlation coefficients in black text
-  tl.col = "black",          # Axis labels in black
-  tl.cex = 1.1,              # Slightly larger axis text
-  number.cex = 0.9,          # Font size for correlation values
-  cl.cex = 0.9,              # Color legend text size
-  cl.lim = c(-1, 1),         # Color scale limits
-  diag = FALSE              # Remove diagonal since it's always 1
+  col = colorRampPalette(c("blue", "white", "firebrick"))(200),
+  addCoef.col = "black",    
+  tl.col = "black",          
+  tl.cex = 1.1,              
+  number.cex = 0.9,          
+  cl.cex = 0.9,              
+  cl.lim = c(-1, 1),        
+  diag = FALSE              
 )
 ```
 
@@ -192,13 +192,6 @@ lasso_tuning_workflow <- workflow() %>%
   add_model(lasso_spec_tune) %>%
   add_recipe(rec)
 
-# (Optional) Diagnostic check
-print("Objects in the environment:")
-print(ls())
-if (!"lasso_tuning_workflow" %in% ls()) {
-  stop("Error: lasso_tuning_workflow was not created!")
-}
-
 # Perform grid search without CV (apparent resampling)
 lasso_tune <- tune_grid(
   lasso_tuning_workflow,
@@ -280,13 +273,6 @@ set.seed(rdmseed)
 # Create 5-fold CV with 5 repeats
 cv_folds <- vfold_cv(ml_df, v = 5, repeats = 5)
 
-# (Optional) Check that the workflow exists before tuning
-if (!exists("lasso_tuning_workflow")) {
-  stop("Error: lasso_tuning_workflow is missing! Ensure the tuning chunk ran correctly.")
-} else {
-  print("lasso_tuning_workflow exists. Proceeding with CV tuning.")
-}
-
 # Tune LASSO using CV
 lasso_tune_cv <- tune_grid(
   lasso_tuning_workflow,
@@ -296,8 +282,6 @@ lasso_tune_cv <- tune_grid(
 )
 
 autoplot(lasso_tune_cv)
-
-
 ```
 
 ## Cross-validation tuning for our random forest model
