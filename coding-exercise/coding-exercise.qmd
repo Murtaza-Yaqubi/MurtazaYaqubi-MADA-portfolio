@@ -186,27 +186,42 @@ It’s likely not a meaningful predictor for life expectancy in this dataset.
 
 ### This section was contributed to by Shaun van den Hurk
 
+
+### This section was contributed to by Shaun van den Hurk
+
 We will be working with another dataset from the dslabs package again.
 The different datasets that are available in the package can be seen online by viewing the details on CRAN.
 The website for the respective PDF with information on different datasets can be found here: https://cran.r-project.org/web/packages/dslabs/dslabs.pdf
+
+load packages
+```{r}
+library(knitr) # For kable() table formatting
+library(tidyverse)  # For data wrangling and plotting
+```
 
 We will work with a dataset that evaluates contagious disease data for US states.
 
 ```{r}
 #Get an overview of the us_contagious_diseases data structure
-str(us_contagious_diseases)
+str(us_contagious_diseases) # Understand the variables and types
 
 #Get a summary of the us_contagious_diseases data
-summary(us_contagious_diseases)
+summary(us_contagious_diseases) # Basic statistics across variables
 
 #Determine the object class for the us_contagious_diseases dataset
-class(us_contagious_diseases)
+class(us_contagious_diseases) 
 
-#View the dataset help file information
+#View the dataset help file information to learn more from documentation
 help(us_contagious_diseases)
 
 #View the dataset as a whole in the console
-print(us_contagious_diseases)
+view(us_contagious_diseases)
+
+#If not rendering you can print this too:
+#print(us_contagious_diseases)
+
+#Render friendly shorter view:
+head(us_contagious_diseases, n = 50) # see the top 50 results printed
 
 ```
 
@@ -216,33 +231,65 @@ We see that the the minimum year in the dataset is 1928 and the maximum is 2011.
 Information is reported per week in the year and the total number where cases were reported gives the weeks reporting (from 0 to 52).
 The diseases investigated are: Hepatitis A, Measles, Mumps, Pertussis,Polio, Rubella, and Smallpox.
 
-For our evaluations we will focus on a 20-year subset of the data: 1990 - 2010.
+For our evaluations we will focus on a 20-year subset of the data: 1990 - 2010 which has good reporting of the data.
 We will filter this out of the main dataset and name the new object: us_illness_20y
 
 ```{r}
+# Focus analysis on the years 1990 to 2010
 us_illness_20y <- us_contagious_diseases |> filter(year>1989 & year<2011) #Use the filter function to select for the rows that include the years 1990 - 2010
 
-print(us_illness_20y)
+
+#View the reduced 20 Year dataset as a whole in the console although this will not display on the rendered website
+view(us_illness_20y)
+
+#If not rendering you can print this too:
+#print(us_illness_20y)
+
+#Render friendly shorter view:
+head(us_illness_20y, n = 50) # see the top 50 results printed
+summary(us_illness_20y)
+
 ```
+
+
+
+From this filtered dataset covering 1990 to 2010:
+
+- Hepatitis A and Pertussis have the highest number of records, suggesting they were more frequently reported or monitored during this period.
+- Polio and Smallpox have zero entries, consistent with their elimination or near-elimination in the U.S. by the 1990s.
+- The range in population sizes (from under 500,000 to over 37 million) reinforces why it's important to normalize case counts by population.
+- The variable weeks_reporting shows variation, which could reflect differences in surveillance intensity across states or diseases.
+
+
+
 
 We want to look if there are any missing (na) values in our selected dataset.
 
 ```{r}
+# Check for any NAs
 us_illness_20y |> filter(if_any(everything(), is.na)) #Filter used, If_any helps to check all columns, and everything applies the is.na function to all the columns.
 
 ```
 
 We see that there are no NA values in the dataset and so we do not need to do further data cleaning to address any NA values.
 
+
+Having confirmed the structure and completeness of our 20-year subset, we can now move forward with:
+- Evaluating trends in selected diseases (e.g., measles, hepatitis A)
+- Comparing states and years by total case numbers
+- Normalizing case counts by population to uncover relative disease burden
+
+
 ### Further data analysis:
 
-We would like to know how many cases of Hepatitis A there were in 2010 across all States.We will name the result as an assigned object.
+Since we identified it as one of the diseases with highest reported incidence, we would like to know how many cases of Hepatitis A there were in 2010 across all States.We will name the result as an assigned object.
 
 ```{r}
 #First we will create an object with all the Hepatitis A cases in 2010 filtered 
 hepatitis_A_2010 <- us_contagious_diseases |>filter(disease=='Hepatitis A' & year==2010) 
 
 #We will now get a sum of all the case counts from the hepatitis cases in 2010
+# Total case count for Hepatitis A in 2010
 hep_A_2010_count <- sum(hepatitis_A_2010 $count)
 
 ```
@@ -253,7 +300,7 @@ Of course we could generate code to filter and evaluate this further too.
 
 The code from above can be edited and used to evaluate any other disease and year combination present in the dataset (e.g. Measles and Georgia).
 
-We want to visually see which state had the highest number of Hepatitis A cases in 2010.
+We want to visually see/confirm which state had the highest number of Hepatitis A cases in 2010.
 
 ```{r}
 #Generate a bar chart that displays Hepatitis A case numbers by state from the year 2010
@@ -261,6 +308,9 @@ ggplot(data = hepatitis_A_2010, aes(x =state, y =count)) + geom_bar(stat = "iden
 #Use the ggplot function with aes and define the variables, define a bar chart by using geom_bar, add labels with labs, and then specify that the x-axis labels rotate 90 degrees by using the theme function.
 
 ```
+
+We confirm that New York State had the highest number of Hepatitis A cases in 2010.
+
 
 We would then like to see which year had the highest number of cases of Measles.
 
@@ -270,11 +320,20 @@ This will then be used to give us the year with the highest number of cases.
 
 ```{r}
 #Use the filter function and view the results
+# Filter dataset for measles cases in the 20-year window
 measles_cases <- us_illness_20y|> filter(disease=='Measles')
 summary(measles_cases)
-print(measles_cases)
+#Render friendly approach to viewing the data although this will not display on the rendered website
+head(measles_cases, n = 50) # see the top 50 results printed (a little over two of the 20 year periods)
+view(measles_cases)
+
+#If not rendering you can print this too but the list will have 663 rows:
+#print(measles_cases)
 
 ```
+
+
+Note: Although the summary() output still listed other diseases (e.g., Mumps), this is due to how R handles categorical variables (factors). The filter operation worked correctly — the dataset contains only Measles cases.
 
 From this evaluation we can see that our dataset for the reported measles cases ends in 2002 and not 2010 (or 2011) like the other diseases in the reported dataset.
 So our period of evaluation for measles is 1990 to 2002.
@@ -286,6 +345,7 @@ We first want to see which states were actually included in the dataset.
 We will use the unique function from the dplyr package to identify these.
 
 ```{r}
+# Get list of unique states
 unique(measles_cases$state)
 ```
 
@@ -295,9 +355,11 @@ We will continue with our process to see the total number of measles cases by ye
 
 ```{r}
 #We get the total measles cases by grouping the years together and then using the sum function on the count and then summarise these results
+# Summarize measles totals per year
 measles_total_cases <- measles_cases |> group_by(year) |> summarise(total_cases=sum(count))
 
 print(measles_total_cases)
+# Show summary of annual case totals
 summary(measles_total_cases)
 ```
 
@@ -316,6 +378,7 @@ ggplot(data = measles_total_cases, aes(x=year, y= total_cases)) + geom_line(grou
 ```
 
 The graph that we plotted helps to illustrate a decreasing trend in the number of cases of measles at the start of the 1990s.
+By the late 1990s and early 2000s, case counts sharply decreased, this could suggest improvements in vaccination coverage and public health response.
 If we wanted to evaluate this further we could go back to the original dataset and plot the measles cases over a longer time frame.
 
 The same work flow and code can be used and adjusted for different diseases and time frames.
@@ -327,21 +390,79 @@ We will calculate the percent of the population affected and add this as an addi
 We will then order the dataset by the percent affected column to see this visually.
 
 ```{r}
+# Create a new column that calculates the percent of the population affected by measles
+# This helps normalize across states with large and small populations
+# (e.g., 1,000 cases in New York vs. 1,000 in Vermont are not equivalent in population impact)
+
 #adding an additonal column with the mutate function
 measles_percent <- measles_cases|> mutate(percent_affected = count/population*100)
 
 #Reorder the percent of the population affected from highest to lowest
 measles_percent_top <- measles_percent |> arrange(desc(percent_affected))
 
-print(measles_percent_top)
+#Render friendly approach to viewing the data although this will not display on the rendered website
+head(measles_cases, n = 50) # see the top 50 results printed (a little over four of the 12 year periods - data from just over four states)
+view(measles_cases)
+
+#If not rendering you can print this too but the list will have 663 rows:
+#print(measles_percent_top)
+
+# Display top 10 state-year combinations using kable for clean output
+kable(head(measles_percent_top, 10), caption = "Top 10 State-Year Combinations by Measles Percent Affected")
 ```
 
 From this we can see that Idaho in 1991 had the highest value for percent of the population affected by measles.
 This was followed by California, Texas, Nevada and the Wisconsin, all in 1990.
+This supports the earlier observation that measles cases peaked in the early part of the study window.
+
+
+Percent of Population Affected by Measles Over Time (Top 5 States)
+While we’ve looked at total case counts and peak values, it’s also helpful to see how measles impacted the population over time in the states most affected. This plot shows the percent of population affected by year for the five states with the highest average impact.
+
+```{r}
+# Identify top 5 states by average measles percent affected across all years
+top_states <- measles_percent |>
+  group_by(state) |>
+  summarise(avg_percent = mean(percent_affected)) |>
+  slice_max(avg_percent, n = 5) |>
+  pull(state)
+
+# Filter original dataset to include only these top states
+measles_top_states <- measles_percent |>
+  filter(state %in% top_states)
+
+# Convert year to a factor so x-axis shows as categorical integers
+measles_top_states$year <- as.factor(measles_top_states$year)
+
+# Plot percent of population affected over time for these top states
+ggplot(measles_top_states, aes(x = year, y = percent_affected, color = state, group = state)) +
+  geom_line(size = 1.1) +
+  labs(
+    title = "Measles Impact Over Time\nTop 5 States by % of Population Affected",
+    x = "Year",
+    y = "% of Population Affected"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+The plot shows that the states with the highest measles burden relative to population size —including Idaho, California, Texas, Utah, and Alaska—experienced their peaks almost entirely between 1990 and 1992. In particular, Idaho had a spike exceeding 4% of its population affected in a single year.
+
+By 1993, these values dropped sharply across all top states and remained close to zero thereafter. This trend is consistent with the national measles elimination effort in the U.S. during the early 1990s, suggesting strong vaccine rollout and public health interventions led to rapid containment.
+
+These results reinforce our earlier conclusion: while absolute case counts can highlight outbreaks, percent-based metrics are essential for understanding true population impact, especially in smaller states like Idaho.
+
 
 We will now run a basic linear regression model to investigate if there is any correlation between the percent of the population that is affected and the population size.
 
 ```{r}
+# Fit a linear model to explore relationship between population size and the percent of the population affected by measles
+# 'lm' fits a linear regression model
+# 'percent_affected' is the dependent (response) variable
+# 'population' is the independent (predictor) variable
 #generate a linear model with the highlighted variables
 measles_cases_model <- lm(percent_affected ~ population, data = measles_percent)
 
@@ -349,5 +470,11 @@ measles_cases_model <- lm(percent_affected ~ population, data = measles_percent)
 summary(measles_cases_model)
 
 ```
+The intercept estimate is 0.0005584, and the population coefficient is 3.575e-11. The p-value for population is 0.067, which is just above the conventional threshold for significance (0.05), indicating a marginal association. The R² value is only 0.005, indicating that population size explains less than 1% of the variance in measles percent affected. Residual errors are small but skewed slightly, and the F-test is not strongly significant.
 
-Based on these results it appears that there is not a statistically significant relationship between the the percent of the population affected by measles and the population size.Although perhaps this could be evaluated over a longer time frame since the bulk of the cases occured within the first few years of 1990s within our filtered dataset.
+
+
+Based on these results it appears that there is not a statistically significant relationship between the the percent of the population affected by measles and the population size.
+This suggests that population alone is not a useful predictor for the impact of measles, and additional factors (e.g., vaccination coverage, urbanization, reporting practices) would need to be considered in further analyses.
+
+Although perhaps this could be evaluated over a longer time frame since the bulk of the cases occured within the first few years of 1990s within our filtered dataset.
